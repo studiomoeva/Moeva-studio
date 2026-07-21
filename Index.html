@@ -16,13 +16,16 @@
       <a href="#inicio">Inicio</a>
       <a href="#estudio">El Estudio</a>
       <a href="#clases">Clases</a>
+      <a href="#horarios">Horarios</a>
       <a href="#profesoras">Staff</a>
+      <a href="#paquetes">Paquetes</a>
+      <a href="#contacto">Ubicación</a>
       <a href="#perfil" onclick="abrirPerfil(event)">Mi Portal / Alumna</a>
       <a href="#admin-panel" class="btn-admin-link">Admin Studio</a>
     </nav>
   </header>
 
-  <!-- SECCIÓN INICIO / HERO -->
+  <!-- 1. INICIO -->
   <section id="inicio" class="hero">
     <div class="hero-content">
       <span class="sub-hero">MOVEMENT & POLE STUDIO</span>
@@ -30,12 +33,12 @@
       <p>Estudio boutique en Puebla. Fuerza, arte y movimiento en armonía bajo una estética sofisticada.</p>
       <div class="hero-buttons">
         <a href="#perfil" class="btn-principal">Acceso Alumnas</a>
-        <a href="#clases" class="btn-outline">Ver Clases</a>
+        <a href="#horarios" class="btn-outline">Ver Horarios</a>
       </div>
     </div>
   </section>
 
-  <!-- SECCIÓN EL ESTUDIO -->
+  <!-- 2. EL ESTUDIO -->
   <section id="estudio" class="section">
     <div class="container">
       <span class="section-tag">FILOSOFÍA MOÉVA</span>
@@ -59,7 +62,7 @@
     </div>
   </section>
 
-  <!-- SECCIÓN CLASES (Disciplinas exactas solicitadas) -->
+  <!-- 3. CLASES COMPLETAS -->
   <section id="clases" class="section bg-alt">
     <div class="container">
       <span class="section-tag">DISCIPLINAS</span>
@@ -95,12 +98,55 @@
           <h3>Floorwork</h3>
           <p>Trabajo fluido a ras de suelo, transiciones y control corporal.</p>
         </div>
+        <div class="clase-card card-form-container" style="border: 2px solid var(--ciruela);">
+          <h3>Ritmos Latinos</h3>
+          <p>Salsa, bachata y cumbia para conectar con la energía de la música.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- SECCIÓN PROFESORAS / STAFF (Las 4 instructoras reales solicitadas) -->
-  <section id="profesoras" class="section">
+  <!-- 4. HORARIOS OFICIALES -->
+  <section id="horarios" class="section">
+    <div class="container">
+      <span class="section-tag">PROGRAMACIÓN</span>
+      <h2>Horario de Clases MOÉVA</h2>
+      <p class="subtitle-center">Consulta los bloques disponibles de lunes a domingo.</p>
+      
+      <div style="overflow-x:auto; margin-top:30px;">
+        <table style="width:100%; border-collapse:collapse; text-align:center; background:var(--bg-alt); border-radius:8px; overflow:hidden;">
+          <thead>
+            <tr style="background:var(--ciruela); color:white;">
+              <th style="padding:12px;">Hora</th>
+              <th style="padding:12px;">Lunes</th>
+              <th style="padding:12px;">Martes</th>
+              <th style="padding:12px;">Miércoles</th>
+              <th style="padding:12px;">Jueves</th>
+              <th style="padding:12px;">Viernes</th>
+              <th style="padding:12px;">Sábado</th>
+            </tr>
+          </thead>
+          <tbody style="font-size:0.9rem;">
+            <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px; font-weight:600;">7:00 AM</td><td style="padding:10px;">Acond.</td><td style="padding:10px;">Exotic</td><td style="padding:10px;">Floorwork</td><td style="padding:10px;">Pole Fitness</td><td style="padding:10px;">Pole Fitness</td><td style="padding:10px;">-</td></tr>
+            <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px; font-weight:600;">8:00 AM</td><td style="padding:10px;">Pole Fitness</td><td style="padding:10px;">Exotic</td><td style="padding:10px;">Exotic Principiantes</td><td style="padding:10px;">Stretching</td><td style="padding:10px;">Exotic</td><td style="padding:10px;">Exotic</td></tr>
+            <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px; font-weight:600;">9:00 AM</td><td style="padding:10px;">Floorwork</td><td style="padding:10px;">Stretching</td><td style="padding:10px;">Pole Fitness</td><td style="padding:10px;">Urbano</td><td style="padding:10px;">Floorwork</td><td style="padding:10px;">Stretching</td></tr>
+            <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px; font-weight:600;">5:00 PM</td><td style="padding:10px;">Exotic</td><td style="padding:10px;">Acond.</td><td style="padding:10px;">Pole Fitness</td><td style="padding:10px;">Pole Fitness</td><td style="padding:10px;">Pole Fitness</td><td style="padding:10px;">-</td></tr>
+            <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px; font-weight:600;">6:00 PM</td><td style="padding:10px;">Acond.</td><td style="padding:10px;">Pole Fitness</td><td style="padding:10px;">Urbano</td><td style="padding:10px;">Pole Fitness</td><td style="padding:10px;">Floorwork</td><td style="padding:10px;">-</td></tr>
+            <tr style="border-bottom:1px solid var(--border-color);"><td style="padding:10px; font-weight:600;">7:00 PM</td><td style="padding:10px;">Stretching</td><td style="padding:10px;">Exotic Principiantes</td><td style="padding:10px;">Exotic</td><td style="padding:10px;">Acond.</td><td style="padding:10px;">Exotic</td><td style="padding:10px;">-</td></tr>
+            <tr><td style="padding:10px; font-weight:600;">8:00 PM</td><td style="padding:10px;">Pole Fitness</td><td style="padding:10px;">Stretching</td><td style="padding:10px;">Floorwork</td><td style="padding:10px;">Exotic</td><td style="padding:10px;">Ritmos Latinos (8-9 PM)</td><td style="padding:10px;">-</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-form-container" style="margin-top: 25px; text-align:center;">
+        <h3>🎶 Ritmos Latinos con Aranza (Salsa, Bachata y Cumbia)</h3>
+        <p style="margin-top:8px;"><strong>Viernes:</strong> 8:00 PM - 9:00 PM | <strong>Domingos:</strong> 9:00 AM - 10:00 AM y 10:00 AM - 11:00 AM</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. STAFF (4 INSTRUCTORAS) -->
+  <section id="profesoras" class="section bg-alt">
     <div class="container">
       <span class="section-tag">EQUIPO MOÉVA</span>
       <h2>Staff de Instructoras</h2>
@@ -108,25 +154,21 @@
       
       <div class="grid-profesoras" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-top: 40px;">
         <div class="profesora-card card-form-container">
-          <div class="avatar-placeholder" style="background:var(--ciruela-light); width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:15px; color:var(--ciruela); font-weight:bold;">JD</div>
           <h3>Jenni de Diego</h3>
           <span class="rol-profesora" style="color:var(--ciruela); font-weight:500; display:block; margin: 5px 0 10px 0;">Instructora Experta</span>
           <p>Especialista en técnica y desarrollo avanzado en barra.</p>
         </div>
         <div class="profesora-card card-form-container">
-          <div class="avatar-placeholder" style="background:var(--ciruela-light); width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:15px; color:var(--ciruela); font-weight:bold;">SL</div>
           <h3>Sam de la Luz</h3>
           <span class="rol-profesora" style="color:var(--ciruela); font-weight:500; display:block; margin: 5px 0 10px 0;">Instructora Experta</span>
           <p>Pasión por el movimiento, líneas y control corporal.</p>
         </div>
         <div class="profesora-card card-form-container">
-          <div class="avatar-placeholder" style="background:var(--ciruela-light); width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:15px; color:var(--ciruela); font-weight:bold;">CG</div>
           <h3>Cristina Garanicova</h3>
           <span class="rol-profesora" style="color:var(--ciruela); font-weight:500; display:block; margin: 5px 0 10px 0;">Instructora Experta</span>
           <p>Precisión técnica y exigencia artística en cada rutina.</p>
         </div>
         <div class="profesora-card card-form-container">
-          <div class="avatar-placeholder" style="background:var(--ciruela-light); width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:15px; color:var(--ciruela); font-weight:bold;">A</div>
           <h3>Aranza</h3>
           <span class="rol-profesora" style="color:var(--ciruela); font-weight:500; display:block; margin: 5px 0 10px 0;">Ritmos Latinos</span>
           <p>Energía, ritmo y sabor latino aplicado a la pista.</p>
@@ -135,8 +177,53 @@
     </div>
   </section>
 
-  <!-- PORTAL DE ALUMNAS (Perfil, créditos, agendamiento de clases, ficha médica y reglamento) -->
-  <section id="perfil" class="section bg-alt">
+  <!-- 6. PAQUETES (POLE Y RITMOS LATINOS) -->
+  <section id="paquetes" class="section">
+    <div class="container">
+      <span class="section-tag">INVERSIÓN</span>
+      <h2>Paquetes y Membresías</h2>
+      <p class="subtitle-center">Elige el esquema que mejor se adapte a tus entrenamientos.</p>
+      
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:25px; margin-top:40px;">
+        <div class="card-form-container">
+          <h3>Paquete Pole & Disciplinas</h3>
+          <p style="margin-top:10px; font-size:1.1rem; color:var(--ciruela); font-weight:600;">Acceso a Pole Fitness, Exotic, Acondicionamiento, etc.</p>
+          <ul style="margin:15px 0 20px 20px; text-align:left; font-size:0.95rem;">
+            <li>Clase suelta / Drop-in</li>
+            <li>Paquete de 4 Clases</li>
+            <li>Paquete de 8 Clases (Recomendado)</li>
+            <li>Membresía Ilimitada Mensual</li>
+          </ul>
+        </div>
+        <div class="card-form-container">
+          <h3>Paquete Ritmos Latinos (Aranza)</h3>
+          <p style="margin-top:10px; font-size:1.1rem; color:var(--ciruela); font-weight:600;">Salsa, Bachata y Cumbia</p>
+          <ul style="margin:15px 0 20px 20px; text-align:left; font-size:0.95rem;">
+            <li>Clase individual de ritmo</li>
+            <li>Paquete mensual Viernes y Domingos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. CONTACTO Y UBICACIÓN -->
+  <section id="contacto" class="section bg-alt">
+    <div class="container">
+      <span class="section-tag">ESTUDIO BOUTIQUE</span>
+      <h2>Contacto y Ubicación</h2>
+      <p class="subtitle-center">Puebla, México. Ven a conocer nuestras instalaciones.</p>
+      
+      <div class="card-form-container" style="max-width: 600px; margin: 30px auto; text-align: center;">
+        <h3>MOÉVA Movement & Pole Studio</h3>
+        <p style="margin-top:10px;">📍 Puebla, México</p>
+        <p style="margin-top:5px;">💬 WhatsApp de Recepción: Consultas y apartado de cajones directos.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. PORTAL DE ALUMNAS (Reservar, cancelar, pagar, ficha médica, reglamento) -->
+  <section id="perfil" class="section">
     <div class="container-narrow">
       <span class="section-tag">ZONA DE ALUMNAS</span>
       <h2>Portal y Agenda MOÉVA</h2>
@@ -161,40 +248,49 @@
       <div id="dashboard-alumna" class="card-form-container" style="display: none; text-align: left;">
         <h3>Bienvenida, <span id="lbl-nombre-usuario"></span></h3>
         <div class="status-box" style="margin-top:15px; background:var(--ciruela-light); padding:15px; border-radius:8px;">
-          <p><strong>Créditos Disponibles para Agendar:</strong> <span id="lbl-creditos" style="color:var(--ciruela); font-weight:600; font-size:1.3rem;">6</span> clases</p>
+          <p><strong>Créditos Disponibles:</strong> <span id="lbl-creditos" style="color:var(--ciruela); font-weight:600; font-size:1.3rem;">6</span> clases</p>
+          <p style="margin-top:5px;"><strong>Clase Reservada Actual:</strong> <span id="lbl-clase-reservada" style="font-weight:600;">Ninguna</span></p>
+        </div>
+
+        <div style="margin-top:20px; display:flex; gap:10px;">
+          <button class="btn-principal" onclick="simularPago()" style="flex:1;">💳 Pagar / Comprar Paquete</button>
         </div>
 
         <hr style="margin: 25px 0; border:0; border-top:1px solid var(--border-color);">
 
-        <h4>📅 Agendar Clase / Seleccionar Cajón</h4>
+        <h4>📅 Reservar o Cancelar Clase</h4>
         <div class="form-group" style="margin-top:12px;">
-          <label>Selecciona la disciplina:</label>
+          <label>Selecciona la disciplina y horario:</label>
           <select id="select-clase-agenda" class="form-control" style="margin-top:5px;">
-            <option value="Pole Fitness">Pole Fitness</option>
-            <option value="Pole Exotic">Pole Exotic</option>
-            <option value="Pole Exotic Principiantes">Pole Exotic Principiantes</option>
-            <option value="Urbano">Urbano</option>
-            <option value="Acondicionamiento">Acondicionamiento</option>
-            <option value="Stretching">Stretching</option>
-            <option value="Floorwork">Floorwork</option>
+            <option value="Pole Fitness - Lunes 8:00 AM">Pole Fitness - Lunes 8:00 AM</option>
+            <option value="Pole Exotic - Martes 7:00 AM">Pole Exotic - Martes 7:00 AM</option>
+            <option value="Exotic Principiantes - Miércoles 8:00 AM">Exotic Principiantes - Miércoles 8:00 AM</option>
+            <option value="Urbano - Jueves 9:00 AM">Urbano - Jueves 9:00 AM</option>
+            <option value="Acondicionamiento - Lunes 7:00 AM">Acondicionamiento - Lunes 7:00 AM</option>
+            <option value="Stretching - Jueves 8:00 AM">Stretching - Jueves 8:00 AM</option>
+            <option value="Floorwork - Lunes 9:00 AM">Floorwork - Lunes 9:00 AM</option>
+            <option value="Ritmos Latinos (Aranza) - Viernes 8:00 PM">Ritmos Latinos (Aranza) - Viernes 8:00 PM</option>
           </select>
-          <button class="btn-principal full-width" style="margin-top:12px;" onclick="agendarClase()">Confirmar Asistencia / Apartar Cajón</button>
+          <div style="display:flex; gap:10px; margin-top:12px;">
+            <button class="btn-principal" onclick="agendarClase()" style="flex:1;">Confirmar Reserva</button>
+            <button class="btn-outline" onclick="cancelarClase()" style="flex:1; border-color:#a04040; color:#a04040;">Cancelar Reserva</button>
+          </div>
         </div>
 
         <div id="mensaje-reserva" style="margin-top:12px; font-size:0.95rem; color:var(--ciruela); font-weight:600;"></div>
 
         <hr style="margin: 25px 0; border:0; border-top:1px solid var(--border-color);">
 
-        <h4>📋 Requisitos Obligatorios (Ficha Médica y Reglamento)</h4>
+        <h4>📋 Ficha Médica y Reglamento (Obligatorio)</h4>
         <form id="form-requisitos" onsubmit="guardarRequisitos(event)">
           <div class="form-group">
             <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-              <input type="checkbox" id="check-reglamento" required> He leído y acepto el <strong>Reglamento Interno del Estudio</strong>.
+              <input type="checkbox" id="check-reglamento" required> He leído y acepto el <strong>Reglamento Interno MOÉVA</strong>.
             </label>
           </div>
           <div class="form-group" style="margin-top:15px;">
-            <label>Antecedentes Médicos / Lesiones previas / Embarazo:</label>
-            <textarea id="txt-ficha-medica" rows="3" placeholder="Indica si tienes alguna lesión o condición médica o escribe 'Ninguna'..." required style="width:100%; padding:12px; border-radius:6px; border:1px solid var(--border-color); margin-top:5px;"></textarea>
+            <label>Antecedentes Médicos / Lesiones / Embarazo:</label>
+            <textarea id="txt-ficha-medica" rows="3" placeholder="Indica lesiones o escribe 'Ninguna'..." required style="width:100%; padding:12px; border-radius:6px; border:1px solid var(--border-color); margin-top:5px;"></textarea>
           </div>
           <button type="submit" class="btn-outline full-width" style="margin-top:12px;">Guardar Ficha y Reglamento</button>
         </form>
@@ -205,8 +301,8 @@
     </div>
   </section>
 
-  <!-- PANEL DE ADMINISTRACIÓN -->
-  <section id="admin-panel" class="section">
+  <!-- 9. PANEL DE ADMINISTRACIÓN (Editar todo, gestionar alumnas, créditos y reservas) -->
+  <section id="admin-panel" class="section bg-alt">
     <div class="container">
       <span class="section-tag">CONTROL INTERNO</span>
       <h2>Panel Administrativo MOÉVA</h2>
@@ -219,13 +315,16 @@
       </div>
 
       <div id="admin-content" style="display:none;" class="card-form-container">
-        <h3>Gestión de Alumnas y Asistencias</h3>
+        <h3>Gestión General de Alumnas y Estudio</h3>
+        <p style="margin-top:5px; font-size:0.9rem; color:var(--text-muted);">Aquí puedes supervisar y editar los registros de asistencia y créditos activos.</p>
+        
         <table class="admin-table" style="width:100%; margin-top:20px; border-collapse:collapse;">
           <thead>
             <tr style="background:var(--ciruela-light); color:var(--ciruela);">
               <th style="padding:12px; text-align:left;">Alumna</th>
-              <th style="padding:12px; text-align:left;">Créditos Restantes</th>
-              <th style="padding:12px; text-align:left;">Clase Agendada</th>
+              <th style="padding:12px; text-align:left;">Créditos</th>
+              <th style="padding:12px; text-align:left;">Clase Reservada</th>
+              <th style="padding:12px; text-align:left;">Acción Admin</th>
             </tr>
           </thead>
           <tbody id="tabla-admin-body">
@@ -233,6 +332,9 @@
               <td style="padding:12px;" id="admin-row-nombre">-</td>
               <td style="padding:12px;" id="admin-row-creditos">-</td>
               <td style="padding:12px;" id="admin-row-clase">-</td>
+              <td style="padding:12px;">
+                <button class="btn-outline" onclick="adminModificarCreditos()" style="padding:4px 8px; font-size:0.8rem;">Añadir Crédito</button>
+              </td>
             </tr>
           </tbody>
         </table>
