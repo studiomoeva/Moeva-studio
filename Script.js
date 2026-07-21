@@ -41,12 +41,58 @@ function cerrarSesion() {
   alert("Has cerrado sesión correctamente.");
 }
 
-function accesoAdmin() {
-  let password = prompt("Ingresa la contraseña de administrador:");
-  if (password === PASSWORD_ADMIN) {
-    alert("¡Acceso concedido! Bienvenido al panel de control de MÓEVA.");
-  } else if (password !== null) {
-    alert("Contraseña incorrecta.");
+// FUNCIONES DEL PANEL ADMINISTRATIVO
+function verificarAdmin() {
+  let pass = document.getElementById("admin-pass-input").value;
+  if (pass === PASSWORD_ADMIN) {
+    document.getElementById("admin-login-box").style.display = "none";
+    document.getElementById("admin-dashboard").style.display = "block";
+    alert("¡Acceso concedido al panel administrativo de MÓEVA!");
+  } else {
+    alert("Contraseña incorrecta. (Prueba con: moeva2026)");
+  }
+}
+
+function cerrarAdmin() {
+  document.getElementById("admin-login-box").style.display = "block";
+  document.getElementById("admin-dashboard").style.display = "none";
+  document.getElementById("admin-pass-input").value = "";
+}
+
+function cambiarTabAdmin(tabName) {
+  let tabs = document.querySelectorAll(".admin-tab-content");
+  tabs.forEach(t => t.style.display = "none");
+
+  let botones = document.querySelectorAll(".admin-tabs .tab-btn");
+  botones.forEach(b => b.classList.remove("active"));
+
+  if (tabName === 'alumnas') {
+    document.getElementById("tab-alumnas").style.display = "block";
+  } else if (tabName === 'reservas') {
+    document.getElementById("tab-reservas").style.display = "block";
+  } else if (tabName === 'clases') {
+    document.getElementById("tab-clases").style.display = "block";
+  } else if (tabName === 'pagos') {
+    document.getElementById("tab-pagos").style.display = "block";
+  }
+
+  event.currentTarget.classList.add("active");
+}
+
+function agregarAlumnaPrompt() {
+  let nombre = prompt("Nombre completo de la nueva alumna:");
+  if (nombre) {
+    let email = prompt("Correo electrónico:");
+    let tbody = document.getElementById("tabla-alumnas-body");
+    let nuevaFila = document.createElement("tr");
+    nuevaFila.innerHTML = `
+      <td>${nombre}</td>
+      <td>${email || 'Sin correo'}</td>
+      <td>Nuevo Ingreso</td>
+      <td><button class="btn-accion">Editar</button></td>
+    `;
+    tbody.appendChild(nuevaFila);
+    alert("¡Alumna agregada exitosamente al sistema!");
   }
 }
 
