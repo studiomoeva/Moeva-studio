@@ -6,6 +6,7 @@
     --color-linen: #F9F6F0;
     --color-text: #2C2C2C;
     --color-white: #FFFFFF;
+    --color-gold: #C9A768;
     --font-heading: 'Playfair Display', serif;
     --font-sans: 'Plus Jakarta Sans', sans-serif;
     --transition: all 0.3s ease;
@@ -63,6 +64,7 @@ ul {
     display: flex;
     gap: 1.5rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .main-nav a {
@@ -83,16 +85,26 @@ ul {
     border-radius: 4px;
 }
 
-/* Hero Section */
+/* Hero Section — fondo 100% CSS (gradiente + líneas verticales que
+   evocan las barras del estudio), sin depender de una foto externa. */
 .hero {
-    height: 80vh;
-    background: linear-gradient(rgba(74, 35, 90, 0.65), rgba(74, 35, 90, 0.65)), url('https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+    min-height: 80vh;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            rgba(255,255,255,0.05) 0px,
+            rgba(255,255,255,0.05) 1px,
+            transparent 1px,
+            transparent 120px
+        ),
+        radial-gradient(circle at 30% 20%, rgba(200,177,206,0.25), transparent 55%),
+        linear-gradient(160deg, var(--color-plum-dark) 0%, var(--color-plum) 55%, var(--color-mauve) 130%);
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     color: var(--color-white);
-    padding: 0 1rem;
+    padding: 6rem 1rem;
 }
 
 .hero-content .subtitle {
@@ -115,6 +127,13 @@ ul {
     max-width: 600px;
     margin: 0 auto 2rem;
     color: var(--color-linen);
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 /* Botones */
@@ -150,6 +169,21 @@ ul {
     color: var(--color-white);
 }
 
+.btn-outline-light {
+    background: transparent;
+    color: var(--color-white);
+    border: 1px solid rgba(255,255,255,0.6);
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-outline-light:hover {
+    background: rgba(255,255,255,0.15);
+}
+
 .btn-text {
     background: none;
     border: none;
@@ -165,6 +199,20 @@ ul {
 
 .margin-top {
     margin-top: 1.5rem;
+}
+
+.margin-top-lg {
+    margin-top: 3rem;
+}
+
+.small-note {
+    font-size: 0.85rem;
+    color: var(--color-mauve);
+}
+
+.muted {
+    color: #8a8a8a;
+    font-size: 0.85rem;
 }
 
 /* Secciones Generales */
@@ -222,17 +270,33 @@ ul {
     text-align: center;
 }
 
-.color-dot {
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    margin: 0 5px;
+/* Placeholders de fotografías (estudio / instructoras) — pensados para
+   sustituirse fácilmente por <img> reales sin tocar el resto del layout. */
+.photo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    border-style: dashed;
 }
 
-.color-dot.plum { background-color: var(--color-plum); }
-.color-dot.mauve { background-color: var(--color-mauve); }
-.color-dot.linen { background-color: var(--color-mauve-light); border: 1px solid #ccc; }
+.photo-placeholder-icon {
+    font-size: 2rem;
+    opacity: 0.6;
+}
+
+.placeholder-note {
+    font-size: 0.8rem;
+    color: var(--color-mauve);
+    font-style: italic;
+}
+
+.photo-frame {
+    width: 100%;
+    border-radius: 8px;
+    display: block;
+    object-fit: cover;
+}
 
 /* Grid Cards */
 .grid-4 {
@@ -311,12 +375,19 @@ ul {
     font-weight: 600;
     color: var(--color-plum);
     font-family: var(--font-heading);
+    font-size: 1.4rem;
+    object-fit: cover;
 }
 
 .instructor-card .role {
     font-size: 0.9rem;
     color: var(--color-mauve);
     margin-top: 0.25rem;
+}
+
+.instructor-desc {
+    margin-top: 0.75rem;
+    font-size: 0.92rem;
 }
 
 /* Paquetes */
@@ -333,11 +404,27 @@ ul {
     padding-bottom: 0.5rem;
 }
 
+.package-card-centered {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
 .package-list li {
     display: flex;
     justify-content: space-between;
     padding: 0.75rem 0;
     border-bottom: 1px solid #f2f2f2;
+}
+
+.package-list-centered {
+    justify-content: center;
+}
+
+.package-list-item-full {
+    width: 100%;
+    justify-content: space-between;
 }
 
 /* Portal Alumnas Styles */
@@ -371,7 +458,7 @@ ul {
     border-bottom: 2px solid var(--color-plum);
 }
 
-.auth-form .form-group, .booking-form .form-group {
+.auth-form .form-group, .booking-form .form-group, .modal-content .form-group {
     margin-bottom: 1.25rem;
 }
 
@@ -382,7 +469,8 @@ ul {
     font-size: 0.9rem;
 }
 
-.auth-form input, .booking-form input, .booking-form select, .modal-content input, .modal-content textarea {
+.auth-form input, .booking-form input, .booking-form select,
+.modal-content input, .modal-content textarea, .modal-content select {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ddd;
@@ -401,6 +489,8 @@ ul {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
     border-bottom: 1px solid #eee;
     padding-bottom: 1rem;
     margin-bottom: 1.5rem;
@@ -416,6 +506,15 @@ ul {
     background: var(--color-linen);
     padding: 1.5rem;
     border-radius: 6px;
+}
+
+.dashboard-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 .full-width-card {
@@ -435,6 +534,13 @@ ul {
     font-size: 0.95rem;
 }
 
+.reservation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
 .requirements-box {
     display: flex;
     flex-direction: column;
@@ -446,6 +552,8 @@ ul {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     background: var(--color-white);
     padding: 1rem;
     border-radius: 4px;
@@ -454,6 +562,30 @@ ul {
 .sm {
     padding: 0.25rem 0.75rem;
     font-size: 0.85rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.4rem;
+}
+
+.status-ok {
+    background: #E4F3E7;
+    color: #2F7D3C;
+}
+
+.status-pending {
+    background: #FBEAEA;
+    color: #B23A3A;
+}
+
+.empty-state {
+    color: var(--color-mauve);
+    font-style: italic;
 }
 
 /* Modales */
@@ -465,6 +597,7 @@ ul {
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    padding: 1rem;
 }
 
 .modal-content {
@@ -473,6 +606,8 @@ ul {
     border-radius: 8px;
     width: 90%;
     max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .reglamento-text {
@@ -485,6 +620,10 @@ ul {
     margin-top: 1rem;
 }
 
+.reglamento-text p {
+    margin-bottom: 0.75rem;
+}
+
 .hidden {
     display: none !important;
 }
@@ -493,9 +632,117 @@ ul {
     text-align: center;
 }
 
+/* Acceso staff (footer) */
+.admin-access-link {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.8rem;
+    cursor: pointer;
+    margin-top: 0.75rem;
+    text-decoration: underline;
+}
+
+.admin-access-link:hover {
+    color: var(--color-white);
+}
+
+/* Panel de Administración */
 .bg-admin {
     background-color: var(--color-plum-dark);
-    color: white;
+    color: var(--color-white);
+}
+
+.bg-admin .admin-title {
+    color: var(--color-white);
+}
+
+.admin-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.admin-tab-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--color-white);
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.admin-tab-btn.active, .admin-tab-btn:hover {
+    background: var(--color-mauve);
+    border-color: var(--color-mauve);
+}
+
+.admin-section-title {
+    color: var(--color-white);
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+.admin-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: rgba(255,255,255,0.06);
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+}
+
+.admin-row .muted {
+    color: rgba(255,255,255,0.55);
+}
+
+.admin-row-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.admin-row .btn-secondary {
+    color: var(--color-white);
+    border-color: rgba(255,255,255,0.5);
+}
+
+.admin-row .btn-secondary:hover {
+    background: var(--color-white);
+    color: var(--color-plum-dark);
+}
+
+.admin-row .btn-primary {
+    background: var(--color-gold);
+}
+
+.admin-row .btn-primary:hover {
+    background: #B08F52;
+}
+
+.admin-inline-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    background: rgba(255,255,255,0.06);
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.admin-inline-form input, .admin-inline-form select {
+    padding: 0.6rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: var(--color-white);
+    flex: 1;
+    min-width: 140px;
 }
 
 /* Footer */
@@ -505,4 +752,20 @@ ul {
     background-color: var(--color-plum);
     color: var(--color-white);
     font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .estudio-grid, .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .full-width-card {
+        grid-column: span 1;
+    }
+    .main-nav {
+        gap: 0.75rem;
+    }
+    .hero-content h1 {
+        font-size: 2.2rem;
+    }
 }
