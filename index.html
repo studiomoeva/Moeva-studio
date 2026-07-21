@@ -1,4 +1,4 @@
-               <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -54,16 +54,7 @@
                     </ul>
                 </div>
                 <div class="estudio-card-visual">
-                    <!--
-                        FOTO DEL ESTUDIO: sustituye este bloque por
-                        <img src="images/estudio.jpg" alt="Estudio MOÉVA" class="photo-frame">
-                        cuando tengan una fotografía real del espacio.
-                    -->
-                    <div class="visual-box photo-placeholder">
-                        <span class="photo-placeholder-icon">📷</span>
-                        <p><strong>MOÉVA Studio</strong><br>Calzada Zavaleta 2545, Puebla</p>
-                        <p class="placeholder-note">Aquí va una foto real del estudio</p>
-                    </div>
+                    <img src="images/estudio.jpg" alt="Estudio MOÉVA en Puebla" class="photo-frame">
                 </div>
             </div>
         </div>
@@ -158,31 +149,26 @@
                 <p>Pasión, técnica y guía experta en tu proceso</p>
             </div>
             <div class="grid-4">
-                <!--
-                    FOTOS DE INSTRUCTORAS: reemplaza cada <div class="instructor-img">
-                    por <img src="images/nombre.jpg" alt="Nombre" class="instructor-img">
-                    cuando tengan las fotografías reales de cada una.
-                -->
                 <div class="instructor-card">
-                    <div class="instructor-img">JD</div>
+                    <img src="images/exotic-pole-1.jpg" alt="Jenni de Diego" class="instructor-img">
                     <h3>Jenni de Diego</h3>
                     <p class="role">Head Coach</p>
                     <p class="instructor-desc">Apasionada por llevarte al siguiente nivel de fuerza y técnica avanzada. Su guía experta te impulsará a dominar cada truco con seguridad y precisión impecable.</p>
                 </div>
                 <div class="instructor-card">
-                    <div class="instructor-img">SL</div>
+                    <img src="images/exotic-pole-2.jpg" alt="Sam de la Luz" class="instructor-img">
                     <h3>Sam de la Luz</h3>
                     <p class="role">Instructora (Tardes)</p>
                     <p class="instructor-desc">Especialista en conectar con la sensualidad y la fluidez. Te enseñará a fluir con total confianza en el exotic y el floorwork vespertino.</p>
                 </div>
                 <div class="instructor-card">
-                    <div class="instructor-img">CG</div>
+                    <img src="images/pole-trick.jpg" alt="Cristina Garanicova" class="instructor-img">
                     <h3>Cristina Garanicova</h3>
                     <p class="role">Instructora (Mañanas)</p>
                     <p class="instructor-desc">Enfocada en cuidar tu cuerpo, potenciar tu flexibilidad y prepararte desde las primeras horas del día con una técnica consciente y saludable.</p>
                 </div>
                 <div class="instructor-card">
-                    <div class="instructor-img">A</div>
+                    <img src="images/floorwork.jpg" alt="Aranza" class="instructor-img">
                     <h3>Aranza</h3>
                     <p class="role">Especialista en Ritmos Latinos</p>
                     <p class="instructor-desc">Llena de energía y sabor contagioso. Te hará disfrutar cada paso de salsa, bachata y cumbia para soltar el cuerpo y divertirte al máximo.</p>
@@ -371,36 +357,187 @@
         </div>
     </div>
 
-    <!-- Ficha médica -->
+    <!-- Carta responsiva, consentimiento informado y registro de salud -->
     <div id="medical-modal" class="modal hidden">
-        <div class="modal-content">
-            <h3>Ficha Médica</h3>
-            <p class="small-note">Esta información es confidencial y solo la usará el equipo de MOÉVA en caso de una emergencia durante tu clase.</p>
+        <div class="modal-content modal-content-wide">
+            <h3>Carta Responsiva, Consentimiento Informado y Registro de Salud</h3>
+            <p class="small-note">Esta información tiene como finalidad conocer antecedentes relevantes para tu práctica segura y actuar adecuadamente en caso de emergencia. Es confidencial y solo la usa el equipo de MOÉVA. Cualquier cambio en tu estado de salud debes comunicarlo antes de tu próxima clase.</p>
             <form id="medical-form" onsubmit="saveMedicalForm(event)">
+
+                <fieldset class="form-fieldset">
+                    <legend>I. Datos personales</legend>
+                    <div class="form-group">
+                        <label>Nombre completo</label>
+                        <input type="text" name="med-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de nacimiento</label>
+                        <input type="date" name="med-birthday" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Edad</label>
+                        <input type="number" name="med-age" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" name="med-phone" required placeholder="222 000 0000">
+                    </div>
+                    <div class="form-group">
+                        <label>Correo electrónico</label>
+                        <input type="email" name="med-email">
+                    </div>
+                    <div class="form-group">
+                        <label>Domicilio</label>
+                        <input type="text" name="med-address">
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-fieldset">
+                    <legend>II. Contacto de emergencia</legend>
+                    <div class="form-group">
+                        <label>Nombre completo</label>
+                        <input type="text" name="med-emergency-name" required placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Parentesco o relación</label>
+                        <input type="text" name="med-emergency-relation">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono principal</label>
+                        <input type="tel" name="med-emergency-phone" required placeholder="222 000 0000">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono alternativo</label>
+                        <input type="tel" name="med-emergency-phone-alt">
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-fieldset">
+                    <legend>III. Antecedentes de salud</legend>
+                    <div class="form-group">
+                        <label>¿Actualmente presenta alguna lesión, dolor o limitación física? Si es así, describe zona, diagnóstico y fecha aproximada.</label>
+                        <textarea name="med-current-injury" rows="2" placeholder="No, si no aplica"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Ha tenido lesiones anteriores relevantes (cuello, hombros, brazos, muñecas, espalda, cadera, rodillas, tobillos, etc.)? Describe lesión, tratamiento y estado actual.</label>
+                        <textarea name="med-past-injuries" rows="2" placeholder="No, si no aplica"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Ha tenido alguna cirugía u operación? Tipo, fecha aproximada y estado actual.</label>
+                        <textarea name="med-surgeries" rows="2" placeholder="No, si no aplica"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Tiene o ha tenido alguna de las siguientes condiciones? (marca las que apliquen)</label>
+                        <div class="checkbox-grid">
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Problemas cardiacos"> Problemas cardiacos</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Presión arterial alta o baja"> Presión arterial alta/baja</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Desmayos o pérdida de conciencia"> Desmayos / pérdida de conciencia</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Mareos frecuentes"> Mareos frecuentes</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Asma o dificultad respiratoria"> Asma / dificultad respiratoria</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Epilepsia o convulsiones"> Epilepsia / convulsiones</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Diabetes"> Diabetes</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Problemas de columna"> Problemas de columna</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Hernias"> Hernias</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Osteoporosis"> Osteoporosis</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Problemas articulares"> Problemas articulares</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Trastornos de equilibrio"> Trastornos de equilibrio</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Embarazo o posparto reciente"> Embarazo o posparto reciente</label>
+                            <label class="checkbox-item"><input type="checkbox" name="med-cond" value="Alergias graves"> Alergias graves</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Detalles de las condiciones marcadas / otra condición relevante</label>
+                        <textarea name="med-cond-details" rows="2" placeholder="Ninguna, si no aplica"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Toma actualmente algún medicamento que pueda afectar su equilibrio, coordinación, presión o capacidad para hacer ejercicio? ¿Cuál y para qué condición?</label>
+                        <textarea name="med-medication" rows="2" placeholder="No, si no aplica"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Su médico le ha indicado alguna restricción para actividad física? Descríbela.</label>
+                        <textarea name="med-restriction" rows="2" placeholder="No, si no aplica"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Cuenta con autorización médica para realizar actividad física?</label>
+                        <select name="med-authorization">
+                            <option value="Sí">Sí</option>
+                            <option value="No">No</option>
+                            <option value="No aplica">No aplica</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de sangre (si lo conoce)</label>
+                        <input type="text" name="med-blood-type" placeholder="Ej. O+">
+                    </div>
+                    <div class="form-group">
+                        <label>Alergias a medicamentos, alimentos u otras sustancias</label>
+                        <textarea name="med-allergies" rows="2" placeholder="Ninguna, si no aplica"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Información adicional que deba conocer la instructora</label>
+                        <textarea name="med-additional" rows="2"></textarea>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-fieldset">
+                    <legend>IV, V y VI. Declaraciones, asunción de riesgos y atención de emergencia</legend>
+                    <div class="reglamento-text">
+                        <p>Declaro, bajo protesta de decir verdad, que la información proporcionada es completa, correcta y vigente, y me comprometo a informar a MOÉVA sobre cualquier cambio en mi estado de salud. Entiendo que las actividades de MOÉVA (pole fitness, pole exotic, floorwork, acondicionamiento, stretching, baile y otras) implican esfuerzo físico y pueden incluir giros, inversiones, saltos, trabajo de fuerza, flexibilidad, equilibrio, coordinación y contacto con el suelo o equipo especializado, y que conllevan riesgos inherentes (caídas, golpes, torceduras, contracturas, distensiones, lesiones articulares o por sobreesfuerzo, mareos u otros accidentes). Participo voluntariamente y bajo mi propia responsabilidad, me comprometo a seguir las indicaciones de las instructoras, respetar mis límites e informar de inmediato cualquier síntoma. Comprendo que las instructoras no sustituyen a profesionales de la salud.</p>
+                        <p>En consecuencia, libero a MOÉVA Movement & Pole Studio, sus propietarias, socias, instructoras, colaboradoras y personal de responsabilidad por lesiones o daños accidentales derivados de los riesgos normales de la actividad, de no respetar mis límites o las indicaciones de la instructora, de intentar movimientos sin autorización, del uso incorrecto de poles o instalaciones, de omitir información sobre mi salud, o de participar pese a una lesión o restricción no informada. Esta responsiva no excluye las obligaciones que legalmente correspondan a MOÉVA por actos directamente atribuibles al estudio o su personal.</p>
+                        <p>En caso de accidente o emergencia, autorizo al personal de MOÉVA a contactar a mi persona de emergencia, solicitar servicios médicos o ambulancia cuando lo consideren necesario, y proporcionar primeros auxilios básicos dentro de sus capacidades. Los gastos de atención médica, traslado u hospitalización serán responsabilidad mía o de mi representante, salvo que legalmente corresponda algo distinto.</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-item"><input type="checkbox" name="med-accept-declarations" required> He leído y acepto las declaraciones, la asunción de riesgos y la responsiva anteriores.</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Autorización para atención de emergencia</label>
+                        <select name="med-emergency-authorization">
+                            <option value="Autorizo contacto, servicios médicos y primeros auxilios">Autorizo contactar a mi persona de emergencia, solicitar servicios médicos/ambulancia y recibir primeros auxilios</option>
+                            <option value="Solo autorizo contactar a mi persona de emergencia">No autorizo lo anterior; solo autorizo que se contacte a mi persona de emergencia</option>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-fieldset">
+                    <legend>VII. Uso de imagen (opcional)</legend>
+                    <p class="small-note">Esta autorización es independiente de tu inscripción y no condiciona tu acceso a las clases.</p>
+                    <div class="form-group">
+                        <select name="med-image-use">
+                            <option value="No autorizo el uso de mi imagen para fines promocionales">No autorizo el uso de mi imagen para fines promocionales</option>
+                            <option value="Autorizo el uso de fotos/videos con fines informativos y promocionales">Autorizo a MOÉVA a usar fotos o videos en los que aparezca con fines informativos, promocionales y de redes sociales</option>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-fieldset">
+                    <legend>IX. Menor de edad (si aplica)</legend>
+                    <div class="form-group">
+                        <label class="checkbox-item"><input type="checkbox" name="med-is-minor" id="med-is-minor" onchange="toggleMinorFields()"> La alumna es menor de 18 años</label>
+                    </div>
+                    <div id="minor-fields" class="hidden">
+                        <div class="form-group">
+                            <label>Nombre de la madre, padre o tutor legal</label>
+                            <input type="text" name="med-guardian-name">
+                        </div>
+                        <div class="form-group">
+                            <label>Parentesco</label>
+                            <input type="text" name="med-guardian-relation">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono del tutor</label>
+                            <input type="tel" name="med-guardian-phone">
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-item"><input type="checkbox" name="med-guardian-accept"> Declaro ser madre, padre o tutor legal de la menor, autorizo su participación en las actividades de MOÉVA y confirmo que he leído y acepto esta responsiva.</label>
+                        </div>
+                    </div>
+                </fieldset>
+
                 <div class="form-group">
-                    <label>Nombre completo</label>
-                    <input type="text" name="med-name" required>
+                    <label>Firma electrónica (escribe tu nombre completo como firma)</label>
+                    <input type="text" name="med-signature" required placeholder="Nombre completo como firma">
                 </div>
-                <div class="form-group">
-                    <label>Edad</label>
-                    <input type="number" name="med-age" min="1" required>
-                </div>
-                <div class="form-group">
-                    <label>Condiciones médicas relevantes (lesiones, cirugías, padecimientos)</label>
-                    <textarea name="med-conditions" rows="3" placeholder="Ninguna, si no aplica"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Alergias</label>
-                    <textarea name="med-allergies" rows="2" placeholder="Ninguna, si no aplica"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Contacto de emergencia</label>
-                    <input type="text" name="med-emergency-name" required placeholder="Nombre">
-                </div>
-                <div class="form-group">
-                    <label>Teléfono de emergencia</label>
-                    <input type="tel" name="med-emergency-phone" required placeholder="222 000 0000">
-                </div>
+
                 <button type="submit" class="btn-primary full-width">Guardar y firmar ficha</button>
                 <button type="button" onclick="closeMedicalForm()" class="btn-text full-width margin-top">Cerrar</button>
             </form>
@@ -409,17 +546,48 @@
 
     <!-- Reglamento -->
     <div id="reglamento-modal" class="modal hidden">
-        <div class="modal-content">
-            <h3>Reglamento Interno</h3>
+        <div class="modal-content modal-content-wide">
+            <h3>Reglamento General — MOÉVA Movement & Pole Studio</h3>
             <div class="reglamento-text">
-                <p><strong>1.</strong> Llega 10 minutos antes de tu clase; después de 10 minutos de retraso tu lugar puede cederse a otra alumna.</p>
-                <p><strong>2.</strong> Usa ropa adecuada para pole (short/legging sin cierres metálicos) y evita cremas o aceites en piernas y brazos el día de tu clase.</p>
-                <p><strong>3.</strong> Las cancelaciones se deben hacer con al menos 4 horas de anticipación para recuperar tu crédito.</p>
-                <p><strong>4.</strong> Los créditos y paquetes tienen vigencia mensual salvo el plan Ilimitado.</p>
-                <p><strong>5.</strong> La cuota de afiliación anual ($550 MXN) es requisito para tomar clases regulares.</p>
-                <p><strong>6.</strong> El estudio no se hace responsable por lesiones derivadas de no informar condiciones médicas relevantes en tu ficha.</p>
+                <p>Bienvenida a MOÉVA ♡ Nuestro objetivo es ofrecer un espacio seguro, respetuoso y cómodo para todas las alumnas. Al ingresar al estudio, reservar una clase o participar en cualquier actividad, la alumna acepta cumplir el presente reglamento.</p>
+
+                <p><strong>1. Puntualidad</strong></p>
+                <p>Se recomienda llegar entre 5 y 10 minutos antes del inicio de la clase. Existe una tolerancia máxima de 10 minutos; después de ese tiempo no se permitirá el ingreso, debido a que el calentamiento es una parte indispensable de la clase y ayuda a prevenir lesiones. No se repondrá la clase cuando la alumna no pueda ingresar por llegar después del tiempo de tolerancia.</p>
+
+                <p><strong>2. Reservaciones y cancelaciones</strong></p>
+                <p>Todas las clases deberán reservarse previamente mediante los medios autorizados por MOÉVA. Las cancelaciones deberán realizarse dentro del plazo establecido para cada membresía, paquete o promoción. Las cancelaciones realizadas fuera del plazo permitido, así como la inasistencia sin previo aviso, podrán contabilizarse como clase tomada. Las reservaciones están sujetas a disponibilidad y al cupo máximo de cada clase.</p>
+
+                <p><strong>3. Pagos, paquetes y membresías</strong></p>
+                <p>Los pagos deberán realizarse dentro de las fechas establecidas. Las membresías, paquetes y clases son personales e intransferibles, salvo autorización expresa de MOÉVA. No se realizarán reembolsos por clases tomadas, reservadas, canceladas fuera del plazo permitido o no utilizadas durante la vigencia correspondiente. Las clases deberán utilizarse dentro del periodo de vigencia establecido al momento de la compra. Las promociones no son acumulables, salvo que MOÉVA indique lo contrario.</p>
+
+                <p><strong>4. Vestimenta</strong></p>
+                <p>La alumna deberá utilizar ropa apropiada para la actividad que realizará, que permita libertad de movimiento y contacto seguro con el pole cuando la disciplina lo requiera. En clases de pole fitness puede ser necesario utilizar shorts y prendas que permitan el contacto de la piel con el tubo. En clases de exotic o heels se recomienda utilizar botas adecuadas y protectores. No se permitirá realizar la clase con accesorios, prendas o calzado que representen un riesgo para la alumna, otras personas o el equipo.</p>
+
+                <p><strong>5. Higiene y cuidado del equipo</strong></p>
+                <p>No se deberán utilizar cremas, aceites, lociones o productos que reduzcan la adherencia antes de la clase. Cada alumna deberá limpiar el pole y el material utilizado al finalizar la sesión, y mantener limpio y en buenas condiciones todo el equipo, mobiliario e instalaciones. Cualquier daño ocasionado intencionalmente o por uso indebido podrá ser cobrado a la persona responsable.</p>
+
+                <p><strong>6. Seguridad durante las clases</strong></p>
+                <p>La alumna deberá escuchar y seguir en todo momento las instrucciones de la instructora, y no deberá intentar movimientos, inversiones, giros, trucos o figuras avanzadas sin autorización y supervisión. No se permitirá utilizar los poles ni practicar movimientos fuera de los momentos autorizados. La alumna deberá informar inmediatamente a la instructora si presenta dolor, mareo, debilidad, falta de aire, náusea o cualquier otra molestia. La instructora podrá solicitar que una alumna suspenda o modifique un ejercicio cuando considere que existe algún riesgo. MOÉVA podrá negar la participación a cualquier persona bajo los efectos del alcohol, drogas, medicamentos que alteren sus capacidades o en condiciones que comprometan su seguridad.</p>
+
+                <p><strong>7. Condiciones médicas y lesiones</strong></p>
+                <p>Antes de iniciar actividades, la alumna deberá informar sobre lesiones, cirugías, embarazo, enfermedades, condiciones médicas o limitaciones físicas relevantes, y mantener actualizada dicha información. En caso de duda sobre su capacidad para realizar actividad física, deberá consultar previamente a un profesional de la salud. MOÉVA podrá solicitar autorización médica cuando lo considere necesario.</p>
+
+                <p><strong>8. Respeto y convivencia</strong></p>
+                <p>Todas las personas deberán mantener una conducta respetuosa hacia las alumnas, instructoras, personal y visitantes. No se tolerarán insultos, acoso, discriminación, intimidación, agresiones, comentarios ofensivos ni conductas que generen incomodidad o inseguridad. Cada cuerpo, experiencia y proceso de aprendizaje es diferente y deberá ser respetado. MOÉVA podrá solicitar el retiro de cualquier persona que incumpla estas normas.</p>
+
+                <p><strong>9. Uso de las instalaciones</strong></p>
+                <p>Las pertenencias deberán colocarse en las áreas asignadas; MOÉVA no se responsabiliza por objetos olvidados, extraviados o dañados. No se deberán obstruir accesos, salidas, pasillos o áreas de entrenamiento. Los alimentos y bebidas deberán consumirse únicamente en las áreas autorizadas. No se permite fumar ni vapear dentro del estudio.</p>
+
+                <p><strong>10. Fotografías y videos</strong></p>
+                <p>Las alumnas podrán grabarse únicamente durante los momentos autorizados por la instructora, y no deberán fotografiar o grabar a otras personas sin su consentimiento. El equipo de grabación no deberá interferir con la clase ni representar un riesgo. MOÉVA podrá limitar las grabaciones cuando sea necesario para proteger la seguridad y privacidad de las asistentes.</p>
+
+                <p><strong>11. Incumplimiento del reglamento</strong></p>
+                <p>MOÉVA podrá emitir advertencias, suspender temporalmente el acceso o cancelar una membresía cuando exista incumplimiento reiterado o grave del presente reglamento, sin perjuicio de las medidas adicionales que correspondan.</p>
+
+                <p><strong>12. Aceptación</strong></p>
+                <p>Al firmar electrónicamente, declaro que he leído, comprendido y aceptado el Reglamento General de MOÉVA Movement & Pole Studio, y me comprometo a cumplirlo durante mi permanencia en las instalaciones y participación en sus actividades.</p>
             </div>
-            <button onclick="acceptReglamento()" class="btn-primary full-width margin-top">Acepto el reglamento</button>
+            <button onclick="acceptReglamento()" class="btn-primary full-width margin-top">He leído y acepto el reglamento</button>
             <button type="button" onclick="closeReglamentoModal()" class="btn-text full-width margin-top">Cerrar</button>
         </div>
     </div>
