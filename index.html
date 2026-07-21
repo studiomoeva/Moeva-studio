@@ -29,7 +29,10 @@
             <span class="subtitle">Movement & Pole Studio</span>
             <h1>Fuerza, Elegancia y Expresión</h1>
             <p>Un espacio exclusivo en Puebla diseñado para conectar con tu cuerpo a través del pole y el movimiento consciente.</p>
-            <a href="#portal" class="btn-primary">Portal Alumnas</a>
+            <div class="hero-actions">
+                <a href="#portal" class="btn-primary">Portal Alumnas</a>
+                <button onclick="openGuestModal()" class="btn-outline-light">Reservar sin cuenta</button>
+            </div>
         </div>
     </section>
 
@@ -51,8 +54,15 @@
                     </ul>
                 </div>
                 <div class="estudio-card-visual">
-                    <div class="visual-box">
+                    <!--
+                        FOTO DEL ESTUDIO: sustituye este bloque por
+                        <img src="images/estudio.jpg" alt="Estudio MOÉVA" class="photo-frame">
+                        cuando tengan una fotografía real del espacio.
+                    -->
+                    <div class="visual-box photo-placeholder">
+                        <span class="photo-placeholder-icon">📷</span>
                         <p><strong>MOÉVA Studio</strong><br>Calzada Zavaleta 2545, Puebla</p>
+                        <p class="placeholder-note">Aquí va una foto real del estudio</p>
                     </div>
                 </div>
             </div>
@@ -123,70 +133,8 @@
                             <th>Sábado</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>7:00 AM</td>
-                            <td>Acond.</td>
-                            <td>Exotic</td>
-                            <td>Floorwork</td>
-                            <td>Pole Fitness</td>
-                            <td>Pole Fitness</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>8:00 AM</td>
-                            <td>Pole Fitness</td>
-                            <td>Exotic</td>
-                            <td>Exotic Principiantes</td>
-                            <td>Stretching</td>
-                            <td>Exotic</td>
-                            <td>Exotic</td>
-                        </tr>
-                        <tr>
-                            <td>9:00 AM</td>
-                            <td>Floorwork</td>
-                            <td>Stretching</td>
-                            <td>Pole Fitness</td>
-                            <td>Urbano</td>
-                            <td>Floorwork</td>
-                            <td>Stretching</td>
-                        </tr>
-                        <tr>
-                            <td>5:00 PM</td>
-                            <td>Exotic</td>
-                            <td>Acond.</td>
-                            <td>Pole Fitness</td>
-                            <td>Pole Fitness</td>
-                            <td>Pole Fitness</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>6:00 PM</td>
-                            <td>Acond.</td>
-                            <td>Pole Fitness</td>
-                            <td>Urbano</td>
-                            <td>Pole Fitness</td>
-                            <td>Floorwork</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>7:00 PM</td>
-                            <td>Stretching</td>
-                            <td>Exotic Principiantes</td>
-                            <td>Exotic</td>
-                            <td>Acond.</td>
-                            <td>Exotic</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>8:00 PM</td>
-                            <td>Pole Fitness</td>
-                            <td>Stretching</td>
-                            <td>Floorwork</td>
-                            <td>Exotic</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
+                    <tbody id="schedule-body">
+                        <!-- Se llena dinámicamente desde script.js según los horarios guardados -->
                     </tbody>
                 </table>
             </div>
@@ -196,15 +144,8 @@
                 <h2>Nuevas Clases: Ritmos Latinos</h2>
                 <p>Salsa, Bachata y Cumbia</p>
             </div>
-            <div class="grid-2">
-                <div class="card">
-                    <h3>Viernes</h3>
-                    <p><strong>8:00 PM - 9:00 PM</strong></p>
-                </div>
-                <div class="card">
-                    <h3>Domingos</h3>
-                    <p><strong>9:00 AM - 10:00 AM</strong> y <strong>10:00 AM - 11:00 AM</strong></p>
-                </div>
+            <div class="grid-2" id="ritmos-schedule">
+                <!-- Se llena dinámicamente desde script.js -->
             </div>
         </div>
     </section>
@@ -217,22 +158,31 @@
                 <p>Pasión, técnica y guía experta en tu proceso</p>
             </div>
             <div class="grid-4">
+                <!--
+                    FOTOS DE INSTRUCTORAS: reemplaza cada <div class="instructor-img">
+                    por <img src="images/nombre.jpg" alt="Nombre" class="instructor-img">
+                    cuando tengan las fotografías reales de cada una.
+                -->
                 <div class="instructor-card">
+                    <div class="instructor-img">JD</div>
                     <h3>Jenni de Diego</h3>
                     <p class="role">Head Coach</p>
                     <p class="instructor-desc">Apasionada por llevarte al siguiente nivel de fuerza y técnica avanzada. Su guía experta te impulsará a dominar cada truco con seguridad y precisión impecable.</p>
                 </div>
                 <div class="instructor-card">
+                    <div class="instructor-img">SL</div>
                     <h3>Sam de la Luz</h3>
                     <p class="role">Instructora (Tardes)</p>
                     <p class="instructor-desc">Especialista en conectar con la sensualidad y la fluidez. Te enseñará a fluir con total confianza en el exotic y el floorwork vespertino.</p>
                 </div>
                 <div class="instructor-card">
+                    <div class="instructor-img">CG</div>
                     <h3>Cristina Garanicova</h3>
                     <p class="role">Instructora (Mañanas)</p>
                     <p class="instructor-desc">Enfocada en cuidar tu cuerpo, potenciar tu flexibilidad y prepararte desde las primeras horas del día con una técnica consciente y saludable.</p>
                 </div>
                 <div class="instructor-card">
+                    <div class="instructor-img">A</div>
                     <h3>Aranza</h3>
                     <p class="role">Especialista en Ritmos Latinos</p>
                     <p class="instructor-desc">Llena de energía y sabor contagioso. Te hará disfrutar cada paso de salsa, bachata y cumbia para soltar el cuerpo y divertirte al máximo.</p>
@@ -241,14 +191,14 @@
         </div>
     </section>
 
-    <    <!-- Paquetes -->
+    <!-- Paquetes -->
     <section id="paquetes" class="section-padding">
         <div class="container">
             <div class="section-title">
                 <h2>Paquetes y Tarifas</h2>
                 <p>Movimiento, fuerza y expresión a tu ritmo</p>
             </div>
-            
+
             <div class="grid-2">
                 <!-- Clases y Paquetes Pole / General -->
                 <div class="package-card">
@@ -282,17 +232,15 @@
             </div>
 
             <!-- Afiliación -->
-            <div class="package-card margin-top-lg" style="max-width: 500px; margin-left: auto; margin-right: auto; text-align: center;">
+            <div class="package-card margin-top-lg package-card-centered">
                 <h3>Afiliación</h3>
-                <ul class="package-list" style="justify-content: center;">
-                    <li style="width: 100%; justify-content: space-between;"><span>Cuota de membresía anual</span> <strong>$550 MXN</strong></li>
+                <ul class="package-list package-list-centered">
+                    <li class="package-list-item-full"><span>Cuota de membresía anual</span> <strong>$550 MXN</strong></li>
                 </ul>
-                <p class="margin-top" style="font-size: 0.85rem; color: var(--mauve);">* Todos los paquetes tienen vigencia mensual.</p>
+                <p class="margin-top small-note">* Todos los paquetes tienen vigencia mensual.</p>
             </div>
         </div>
     </section>
-
-    
 
     <!-- Portal de Alumnas -->
     <section id="portal" class="section-padding bg-light">
@@ -307,7 +255,7 @@
                     <button class="tab-btn active" onclick="switchAuthTab('login')">Iniciar Sesión</button>
                     <button class="tab-btn" onclick="switchAuthTab('register')">Registro / Afiliación</button>
                 </div>
-                
+
                 <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
                     <div class="form-group">
                         <label>Correo Electrónico</label>
@@ -330,6 +278,14 @@
                         <input type="email" id="reg-email" required placeholder="tu@correo.com">
                     </div>
                     <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" id="reg-phone" required placeholder="222 000 0000">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de nacimiento</label>
+                        <input type="date" id="reg-birthday" required>
+                    </div>
+                    <div class="form-group">
                         <label>Contraseña</label>
                         <input type="password" id="reg-password" required placeholder="••••••••">
                     </div>
@@ -345,16 +301,30 @@
                 <div class="dashboard-grid">
                     <div class="dashboard-card">
                         <h4>Tus Créditos</h4>
-                        <div class="credit-counter"><span id="credit-count">4</span> Créditos disponibles</div>
+                        <div class="credit-counter"><span id="credit-count">0</span> Créditos disponibles</div>
+                        <button onclick="openCheckoutModal()" class="btn-secondary sm margin-top">Comprar paquete</button>
                     </div>
                     <div class="dashboard-card">
                         <h4>Trámites y Requisitos</h4>
                         <div class="requirements-box">
                             <div class="req-item">
-                                <span>Ficha Médica y Afiliación</span>
-                                <button onclick="openReglamentoModal()" class="btn-secondary sm">Ver Requisitos</button>
+                                <span>Ficha Médica <span id="medical-status-badge" class="status-badge status-pending">Pendiente</span></span>
+                                <button id="medical-status-btn" onclick="openMedicalForm()" class="btn-secondary sm">Completar ficha médica</button>
+                            </div>
+                            <div class="req-item">
+                                <span>Reglamento Interno <span id="reglamento-status-badge" class="status-badge status-pending">Pendiente</span></span>
+                                <button onclick="openReglamentoModal()" class="btn-secondary sm">Ver y firmar reglamento</button>
                             </div>
                         </div>
+                    </div>
+                    <div class="dashboard-card full-width-card">
+                        <div class="dashboard-card-header">
+                            <h4>Tus Clases Agendadas</h4>
+                            <button onclick="openBookingModal()" class="btn-primary sm">Agendar clase</button>
+                        </div>
+                        <ul id="reservations-list" class="simple-list">
+                            <li class="empty-state">No tienes clases agendadas todavía.</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -372,7 +342,7 @@
             <p class="margin-top">Teléfono / WhatsApp: <a href="https://wa.me/522224694805" target="_blank">222 469 4805</a></p>
             <p>Correo: studiomoeva@gmail.com</p>
             <div class="social-links margin-top">
-                <a href="https://instagram.com/moeva.studio" target="_blank">Instagram: @moeva.studio</a> | 
+                <a href="https://instagram.com/moeva.studio" target="_blank">Instagram: @moeva.studio</a> |
                 <a href="https://tiktok.com/@moevastudio3" target="_blank">TikTok: @moevastudio3</a>
             </div>
         </div>
@@ -381,7 +351,224 @@
     <!-- Footer -->
     <footer class="site-footer">
         <p>&copy; 2026 MOÉVA Movement & Pole Studio. Todos los derechos reservados.</p>
+        <button onclick="openAdminLogin()" class="admin-access-link">Acceso staff</button>
     </footer>
+
+    <!-- ============================ MODALES ============================ -->
+
+    <!-- Agendar clase (alumna con créditos) -->
+    <div id="booking-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Agendar Clase</h3>
+            <form onsubmit="handleBooking(event)">
+                <div class="form-group">
+                    <label>Horario disponible</label>
+                    <select id="book-slot" required></select>
+                </div>
+                <button type="submit" class="btn-primary full-width">Confirmar (usa 1 crédito)</button>
+                <button type="button" onclick="closeBookingModal()" class="btn-text full-width margin-top">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ficha médica -->
+    <div id="medical-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Ficha Médica</h3>
+            <p class="small-note">Esta información es confidencial y solo la usará el equipo de MOÉVA en caso de una emergencia durante tu clase.</p>
+            <form id="medical-form" onsubmit="saveMedicalForm(event)">
+                <div class="form-group">
+                    <label>Nombre completo</label>
+                    <input type="text" name="med-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Edad</label>
+                    <input type="number" name="med-age" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>Condiciones médicas relevantes (lesiones, cirugías, padecimientos)</label>
+                    <textarea name="med-conditions" rows="3" placeholder="Ninguna, si no aplica"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Alergias</label>
+                    <textarea name="med-allergies" rows="2" placeholder="Ninguna, si no aplica"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Contacto de emergencia</label>
+                    <input type="text" name="med-emergency-name" required placeholder="Nombre">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono de emergencia</label>
+                    <input type="tel" name="med-emergency-phone" required placeholder="222 000 0000">
+                </div>
+                <button type="submit" class="btn-primary full-width">Guardar y firmar ficha</button>
+                <button type="button" onclick="closeMedicalForm()" class="btn-text full-width margin-top">Cerrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reglamento -->
+    <div id="reglamento-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Reglamento Interno</h3>
+            <div class="reglamento-text">
+                <p><strong>1.</strong> Llega 10 minutos antes de tu clase; después de 10 minutos de retraso tu lugar puede cederse a otra alumna.</p>
+                <p><strong>2.</strong> Usa ropa adecuada para pole (short/legging sin cierres metálicos) y evita cremas o aceites en piernas y brazos el día de tu clase.</p>
+                <p><strong>3.</strong> Las cancelaciones se deben hacer con al menos 4 horas de anticipación para recuperar tu crédito.</p>
+                <p><strong>4.</strong> Los créditos y paquetes tienen vigencia mensual salvo el plan Ilimitado.</p>
+                <p><strong>5.</strong> La cuota de afiliación anual ($550 MXN) es requisito para tomar clases regulares.</p>
+                <p><strong>6.</strong> El estudio no se hace responsable por lesiones derivadas de no informar condiciones médicas relevantes en tu ficha.</p>
+            </div>
+            <button onclick="acceptReglamento()" class="btn-primary full-width margin-top">Acepto el reglamento</button>
+            <button type="button" onclick="closeReglamentoModal()" class="btn-text full-width margin-top">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Checkout de paquetes -->
+    <div id="checkout-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Comprar Paquete</h3>
+            <form onsubmit="handleCheckout(event)">
+                <div class="form-group">
+                    <label>Paquete</label>
+                    <select id="checkout-package"></select>
+                </div>
+                <div class="form-group">
+                    <label>Método de pago</label>
+                    <select id="checkout-payment">
+                        <option value="efectivo">Efectivo en el estudio</option>
+                        <option value="tarjeta">Tarjeta en el estudio</option>
+                        <option value="transferencia">Transferencia bancaria</option>
+                    </select>
+                </div>
+                <p class="small-note">Tus créditos se activan una vez que el equipo de MOÉVA confirme tu pago.</p>
+                <button type="submit" class="btn-primary full-width">Confirmar compra</button>
+                <button type="button" onclick="closeCheckoutModal()" class="btn-text full-width margin-top">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reserva sin cuenta (invitada) -->
+    <div id="guest-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Reservar sin crear cuenta</h3>
+            <p class="small-note">Ideal si solo quieres tomar tu clase muestra o una clase suelta.</p>
+            <form onsubmit="handleGuestBooking(event)">
+                <div class="form-group">
+                    <label>Nombre completo</label>
+                    <input type="text" id="guest-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="guest-phone" required placeholder="222 000 0000">
+                </div>
+                <div class="form-group">
+                    <label>Correo (opcional)</label>
+                    <input type="email" id="guest-email">
+                </div>
+                <div class="form-group">
+                    <label>Clase</label>
+                    <select id="guest-package"></select>
+                </div>
+                <div class="form-group">
+                    <label>Horario</label>
+                    <select id="guest-slot" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Método de pago</label>
+                    <select id="guest-payment">
+                        <option value="efectivo">Efectivo en el estudio</option>
+                        <option value="tarjeta">Tarjeta en el estudio</option>
+                        <option value="transferencia">Transferencia bancaria</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary full-width">Reservar</button>
+                <button type="button" onclick="closeGuestModal()" class="btn-text full-width margin-top">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login de administración -->
+    <div id="admin-login-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Acceso Staff</h3>
+            <form onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label>Correo</label>
+                    <input type="email" id="admin-email" required placeholder="admin@moeva.studio">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="admin-password" required>
+                </div>
+                <button type="submit" class="btn-primary full-width">Entrar</button>
+                <button type="button" onclick="closeAdminLogin()" class="btn-text full-width margin-top">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================ PANEL ADMIN ============================ -->
+    <section id="admin-panel" class="section-padding bg-admin hidden">
+        <div class="container">
+            <div class="dashboard-header">
+                <h2 class="admin-title">Panel de Administración</h2>
+                <button onclick="handleAdminLogout()" class="btn-secondary">Cerrar Sesión Staff</button>
+            </div>
+
+            <div class="admin-tabs">
+                <button id="admin-tabbtn-reservas" class="admin-tab-btn active" onclick="switchAdminTab('reservas')">Reservas</button>
+                <button id="admin-tabbtn-pagos" class="admin-tab-btn" onclick="switchAdminTab('pagos')">Pagos Pendientes</button>
+                <button id="admin-tabbtn-alumnas" class="admin-tab-btn" onclick="switchAdminTab('alumnas')">Alumnas</button>
+                <button id="admin-tabbtn-horarios" class="admin-tab-btn" onclick="switchAdminTab('horarios')">Horarios</button>
+                <button id="admin-tabbtn-paquetes" class="admin-tab-btn" onclick="switchAdminTab('paquetes')">Paquetes</button>
+            </div>
+
+            <div id="admin-tab-reservas" class="admin-tab-content">
+                <h3 class="admin-section-title">Todas las reservas</h3>
+                <div id="admin-reservations-list"></div>
+            </div>
+
+            <div id="admin-tab-pagos" class="admin-tab-content hidden">
+                <h3 class="admin-section-title">Pagos por confirmar</h3>
+                <div id="admin-purchases-list"></div>
+            </div>
+
+            <div id="admin-tab-alumnas" class="admin-tab-content hidden">
+                <h3 class="admin-section-title">Alumnas registradas</h3>
+                <div id="admin-students-list"></div>
+            </div>
+
+            <div id="admin-tab-horarios" class="admin-tab-content hidden">
+                <h3 class="admin-section-title">Horario de clases</h3>
+                <form onsubmit="addScheduleSlot(event)" class="admin-inline-form">
+                    <select id="admin-schedule-day" required>
+                        <option value="Lunes">Lunes</option>
+                        <option value="Martes">Martes</option>
+                        <option value="Miércoles">Miércoles</option>
+                        <option value="Jueves">Jueves</option>
+                        <option value="Viernes">Viernes</option>
+                        <option value="Sábado">Sábado</option>
+                        <option value="Domingo">Domingo</option>
+                    </select>
+                    <input type="text" id="admin-schedule-time" placeholder="Ej. 7:00 AM" required>
+                    <select id="admin-schedule-discipline"></select>
+                    <button type="submit" class="btn-primary sm">Agregar horario</button>
+                </form>
+                <div id="admin-schedule-list" class="margin-top"></div>
+
+                <h4 class="admin-section-title margin-top-lg">Agregar nueva disciplina</h4>
+                <form onsubmit="addDisciplineFromAdmin(event)" class="admin-inline-form">
+                    <input type="text" id="admin-new-discipline" placeholder="Nombre de la disciplina">
+                    <button type="submit" class="btn-secondary sm">Agregar</button>
+                </form>
+            </div>
+
+            <div id="admin-tab-paquetes" class="admin-tab-content hidden">
+                <h3 class="admin-section-title">Paquetes y precios</h3>
+                <div id="admin-packages-list"></div>
+            </div>
+        </div>
+    </section>
 
     <script src="script.js"></script>
 </body>
