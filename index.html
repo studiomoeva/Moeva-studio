@@ -9,7 +9,6 @@
 </head>
 <body>
 
-    <!-- Navegación -->
     <header class="site-header">
         <div class="logo">MOÉVA</div>
         <nav class="main-nav">
@@ -23,7 +22,6 @@
         </nav>
     </header>
 
-    <!-- Hero / Inicio -->
     <section class="hero">
         <div class="hero-content">
             <span class="subtitle">Movement & Pole Studio</span>
@@ -33,7 +31,6 @@
         </div>
     </section>
 
-    <!-- Estudio -->
     <section id="estudio" class="section-padding">
         <div class="container">
             <div class="section-title">
@@ -62,7 +59,6 @@
         </div>
     </section>
 
-    <!-- Disciplinas (8) -->
     <section id="disciplinas" class="section-padding bg-light">
         <div class="container">
             <div class="section-title">
@@ -106,7 +102,6 @@
         </div>
     </section>
 
-    <!-- Horarios -->
     <section id="horarios" class="section-padding">
         <div class="container">
             <div class="section-title">
@@ -169,7 +164,6 @@
         </div>
     </section>
 
-    <!-- Equipo / Instructoras -->
     <section id="equipo" class="section-padding bg-light">
         <div class="container">
             <div class="section-title">
@@ -201,7 +195,6 @@
         </div>
     </section>
 
-    <!-- Paquetes -->
     <section id="paquetes" class="section-padding">
         <div class="container">
             <div class="section-title">
@@ -231,7 +224,6 @@
         </div>
     </section>
 
-    <!-- Portal de Alumnas y Administración -->
     <section id="portal" class="section-padding bg-light">
         <div class="container">
             <div class="section-title">
@@ -239,7 +231,6 @@
                 <p>Gestiona tu cuenta, agrupa créditos y documentos</p>
             </div>
 
-            <!-- Login / Registro Alumna -->
             <div id="auth-container" class="portal-box">
                 <div class="auth-tabs">
                     <button class="tab-btn active" onclick="switchAuthTab('login')">Iniciar Sesión</button>
@@ -275,7 +266,6 @@
                 </form>
             </div>
 
-            <!-- Dashboard Alumna (Oculto al inicio) -->
             <div id="student-dashboard" class="portal-dashboard hidden">
                 <div class="dashboard-header">
                     <h3>Bienvenida, <span id="user-display-name">Alumna</span></h3>
@@ -314,12 +304,9 @@
 
                 <div class="dashboard-card full-width-card margin-top">
                     <h4>Mis Reservas Activas</h4>
-                    <ul id="reservations-list" class="simple-list">
-                        <!-- Se llena dinámicamente -->
-                    </ul>
+                    <ul id="reservations-list" class="simple-list"></ul>
                 </div>
 
-                <!-- Requisitos Obligatorios -->
                 <div class="dashboard-card full-width-card margin-top">
                     <h4>Trámites y Requisitos Obligatorios</h4>
                     <div class="requirements-box">
@@ -335,12 +322,10 @@
                 </div>
             </div>
 
-            <!-- Acceso Panel Admin -->
             <div class="admin-login-link-container text-center margin-top">
                 <button onclick="toggleAdminPanel()" class="btn-text">¿Eres Administrador? Acceder al Panel</button>
             </div>
 
-            <!-- Panel de Administración -->
             <div id="admin-panel" class="portal-dashboard hidden margin-top">
                 <div class="dashboard-header bg-admin">
                     <h3>Panel de Administración - MOÉVA</h3>
@@ -367,7 +352,6 @@
         </div>
     </section>
 
-    <!-- Modal Pago / Checkout Simulado -->
     <div id="checkout-modal" class="modal hidden">
         <div class="modal-content">
             <h3>Selecciona tu método de pago</h3>
@@ -380,7 +364,6 @@
         </div>
     </div>
 
-    <!-- Modal Ficha Médica -->
     <div id="medical-modal" class="modal hidden">
         <div class="modal-content">
             <h3>Ficha Médica de Admisión</h3>
@@ -399,7 +382,6 @@
         </div>
     </div>
 
-    <!-- Modal Reglamento y Afiliación -->
     <div id="reglamento-modal" class="modal hidden">
         <div class="modal-content">
             <h3>Reglamento y Condiciones de Afiliación</h3>
@@ -413,7 +395,6 @@
         </div>
     </div>
 
-    <!-- Ubicación y Contacto -->
     <section id="contacto" class="section-padding">
         <div class="container text-center">
             <div class="section-title">
@@ -425,7 +406,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="site-footer">
         <p>&copy; 2026 MOÉVA Movement & Pole Studio. Todos los derechos reservados.</p>
     </footer>
