@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MOÉVA | Movement & Pole Studio</title>
+  <title>MÓEVA | Movement & Pole Studio</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
@@ -11,13 +11,16 @@
 
   <!-- ENCABEZADO -->
   <header class="header">
-    <div class="logo">MOÉVA</div>
+    <div class="logo">MÓEVA</div>
     <nav class="nav">
       <a href="#inicio">Inicio</a>
+      <a href="#estudio">El Estudio</a>
       <a href="#clases">Clases</a>
+      <a href="#horarios">Horarios</a>
       <a href="#precios-pole">Precios Pole</a>
-      <a href="#precios-ritmos">Precios Ritmos Latinos</a>
+      <a href="#precios-ritmos">Ritmos Latinos</a>
       <a href="#perfil" onclick="abrirPerfil(event)">Mi Perfil</a>
+      <a href="#reservas" class="btn-reservar">Reservar</a>
     </nav>
   </header>
 
@@ -27,37 +30,68 @@
       <span class="sub-hero">+ MOVEMENT & POLE STUDIO</span>
       <h1>Muévete desde adentro.</h1>
       <p>Un estudio boutique donde la fuerza, el arte y el movimiento se encuentran.</p>
+      <a href="#reservas" class="btn-principal" style="display:inline-block; margin-top:20px; padding:12px 30px; text-decoration:none;">Agendar Clase Muestra</a>
+    </div>
+  </section>
+
+  <!-- SECCIÓN EL ESTUDIO -->
+  <section id="estudio" class="section">
+    <span class="section-tag">NUESTRA FILOSOFÍA</span>
+    <h2>Un espacio diseñado para ti</h2>
+    <p class="subtitle-center">Inspirado en una estética minimalista boutique con tonos ciruela y lino, MÓEVA es un santuario seguro para explorar tu potencial físico y artístico.</p>
+  </section>
+
+  <!-- SECCIÓN CLASES -->
+  <section id="clases" class="section bg-alt">
+    <span class="section-tag">DISCIPLINAS</span>
+    <h2>Cada cuerpo, un camino.</h2>
+    <div class="grid-modalidades" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; text-align: left;">
+      <div class="modalidad-card" style="background:white; padding:25px; border-radius:8px; border:1px solid var(--border-color);">
+        <h3 style="color:var(--ciruela); margin-bottom:10px; font-family:'Playfair Display', serif;">Pole Fitness</h3>
+        <p style="font-size:0.9rem; color:#666;">Fuerza, resistencia y acrobacias en la barra con técnica segura.</p>
+      </div>
+      <div class="modalidad-card" style="background:white; padding:25px; border-radius:8px; border:1px solid var(--border-color);">
+        <h3 style="color:var(--ciruela); margin-bottom:10px; font-family:'Playfair Display', serif;">Exotic Pole</h3>
+        <p style="font-size:0.9rem; color:#666;">Fluidez, sensualidad, manejo de piso y expresión artística única.</p>
+      </div>
+      <div class="modalidad-card" style="background:white; padding:25px; border-radius:8px; border:1px solid var(--border-color);">
+        <h3 style="color:var(--ciruela); margin-bottom:10px; font-family:'Playfair Display', serif;">Floorwork & Stretching</h3>
+        <p style="font-size:0.9rem; color:#666;">Flexibilidad profunda, acondicionamiento y control corporal en el suelo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN HORARIOS -->
+  <section id="horarios" class="section">
+    <span class="section-tag">CALENDARIO</span>
+    <h2>Horarios de Clases</h2>
+    <p class="subtitle-center">Consulta los bloques disponibles de la semana.</p>
+    <div style="background:white; padding:30px; border-radius:8px; border:1px solid var(--border-color); max-width:700px; margin:0 auto; text-align:left;">
+      <p><strong>Lunes a Viernes:</strong> 07:00 AM – 09:00 PM</p>
+      <p style="margin-top:10px;"><strong>Sábados:</strong> 09:00 AM – 02:00 PM</p>
+      <p style="margin-top:10px; font-size:0.85rem; color:var(--mauve);">* Horarios sujetos a disponibilidad de cajón en barra.</p>
     </div>
   </section>
 
   <!-- SECCIÓN PRECIOS POLE -->
-  <section id="precios-pole" class="section">
+  <section id="precios-pole" class="section bg-alt">
     <span class="section-tag">TARIFAS POLE & DISCIPLINAS</span>
     <h2>Paquetes de Pole Dance</h2>
-    <p class="subtitle-center">Pole Fitness, Exotic, Floorwork, Stretching y Acondicionamiento.</p>
+    <p class="subtitle-center">Pole Fitness, Exotic, Floorwork y Acondicionamiento.</p>
 
     <div class="tarifas-wrapper">
       <div class="columna-tarifas">
         <h3>Clases Individuales (Pole)</h3>
         <div class="tarifa-card">
-          <div class="tarifa-info">
-            <strong>Clase Muestra</strong>
-            <span>Prueba sin compromiso</span>
-          </div>
+          <div class="tarifa-info"><strong>Clase Muestra</strong><span>Prueba sin compromiso</span></div>
           <span class="precio">$250</span>
         </div>
         <div class="tarifa-card">
-          <div class="tarifa-info">
-            <strong>Clase Suelta</strong>
-            <span>Ven cuando quieras</span>
-          </div>
+          <div class="tarifa-info"><strong>Clase Suelta</strong><span>Ven cuando quieras</span></div>
           <span class="precio">$380</span>
         </div>
         <div class="tarifa-card">
-          <div class="tarifa-info">
-            <strong>Clase Privada</strong>
-            <span>Atención personalizada</span>
-          </div>
+          <div class="tarifa-info"><strong>Clase Privada</strong><span>Atención personalizada</span></div>
           <span class="precio">$600</span>
         </div>
       </div>
@@ -70,7 +104,7 @@
         </div>
         <div class="tarifa-card popular">
           <span class="badge-pop">MÁS POPULAR</span>
-          <div class="tarifa-info"><strong>8 Clases</strong><span>Ideal para progreso constante</span></div>
+          <div class="tarifa-info"><strong>8 Clases</strong><span>Progreso constante</span></div>
           <span class="precio">$1500</span>
         </div>
         <div class="tarifa-card">
@@ -90,8 +124,8 @@
     <p class="nota-vigencia">✨ Cuota de afiliación / membresía anual: $550</p>
   </section>
 
-  <!-- SECCIÓN PRECIOS RITMOS LATINOS -->
-  <section id="precios-ritmos" class="section bg-alt">
+  <!-- SECCIÓN PRECIOS RITMOS LATINOS (SEPARADOS Y ESPECÍFICOS) -->
+  <section id="precios-ritmos" class="section">
     <span class="section-tag">TARIFAS RITMOS LATINOS</span>
     <h2>Paquetes de Ritmos Latinos</h2>
     <p class="subtitle-center">Salsa, Bachata y Cumbia. Clases sueltas, individuales y en pareja.</p>
@@ -100,17 +134,11 @@
       <div class="columna-tarifas">
         <h3>Clases Sueltas y Afiliación</h3>
         <div class="tarifa-card">
-          <div class="tarifa-info">
-            <strong>Clase Suelta (Ritmos Latinos)</strong>
-            <span>Acceso a una clase puntual</span>
-          </div>
+          <div class="tarifa-info"><strong>Clase Suelta (Ritmos Latinos)</strong><span>Acceso a una clase puntual</span></div>
           <span class="precio">$200</span>
         </div>
         <div class="tarifa-card">
-          <div class="tarifa-info">
-            <strong>Inscripción / Afiliación Ritmos</strong>
-            <span>Pago anual único</span>
-          </div>
+          <div class="tarifa-info"><strong>Inscripción / Afiliación Ritmos</strong><span>Pago anual único</span></div>
           <span class="precio">$350</span>
         </div>
       </div>
@@ -118,45 +146,34 @@
       <div class="columna-tarifas">
         <h3>Paquetes Mensuales (Individual y Pareja)</h3>
         <div class="tarifa-card">
-          <div class="tarifa-info">
-            <strong>Paquete 4 Clases (Individual)</strong>
-            <span>1 clase por semana</span>
-          </div>
+          <div class="tarifa-info"><strong>Paquete 4 Clases (Individual)</strong><span>1 clase por semana</span></div>
           <span class="precio">$700</span>
         </div>
         <div class="tarifa-card popular">
           <span class="badge-pop">FAVORITO</span>
-          <div class="tarifa-info">
-            <strong>Paquete 4 Clases (En Pareja)</strong>
-            <span>Precio especial para dos personas</span>
-          </div>
+          <div class="tarifa-info"><strong>Paquete 4 Clases (En Pareja)</strong><span>Precio especial para dos personas</span></div>
           <span class="precio">$1200</span>
         </div>
         <div class="tarifa-card">
-          <div class="tarifa-info">
-            <strong>Paquete 8 Clases (Individual)</strong>
-            <span>2 clases por semana</span>
-          </div>
+          <div class="tarifa-info"><strong>Paquete 8 Clases (Individual)</strong><span>2 clases por semana</span></div>
           <span class="precio">$1200</span>
         </div>
         <div class="tarifa-card best">
-          <div class="tarifa-info">
-            <strong>Paquete 8 Clases (En Pareja)</strong>
-            <span>Dos personas, constancia total</span>
-          </div>
+          <div class="tarifa-info"><strong>Paquete 8 Clases (En Pareja)</strong><span>Dos personas, constancia total</span></div>
           <span class="precio">$2100</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECCIÓN PERFIL DE USUARIO -->
-  <section id="perfil-section" class="section">
-    <span class="section-tag">TU CUENTA</span>
-    <h2>Crea tu cuenta o consulta tu Perfil</h2>
-    <div style="max-width: 450px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid var(--border-color); text-align: left;">
+  <!-- SECCIÓN RESERVAS Y PERFIL -->
+  <section id="reservas" class="section bg-alt">
+    <span class="section-tag">ACCESO AL ESTUDIO</span>
+    <h2>Reserva tu espacio o gestiona tu cuenta</h2>
+    
+    <div style="max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid var(--border-color); text-align: left;">
       <div id="form-registro-container">
-        <h3>Regístrate en MOÉVA</h3>
+        <h3 style="color:var(--ciruela); margin-bottom:15px; font-family:'Playfair Display', serif;">Crea tu cuenta MÓEVA</h3>
         <form id="form-crear-cuenta" onsubmit="crearCuenta(event)">
           <div style="margin-bottom: 15px;">
             <label style="display:block; font-size:0.85rem; margin-bottom:5px;">Nombre completo:</label>
@@ -166,22 +183,32 @@
             <label style="display:block; font-size:0.85rem; margin-bottom:5px;">Correo electrónico:</label>
             <input type="email" id="reg-email" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;">
           </div>
-          <button type="submit" class="btn-principal" style="width:100%;">Crear Cuenta</button>
+          <button type="submit" class="btn-principal" style="width:100%;">Registrarme</button>
         </form>
       </div>
 
       <div id="vista-perfil" style="display: none;">
-        <h3>Mi Perfil MOÉVA</h3>
+        <h3 style="color:var(--ciruela); margin-bottom:15px; font-family:'Playfair Display', serif;">Mi Perfil MÓEVA</h3>
         <p><strong>Nombre:</strong> <span id="perfil-nombre-txt"></span></p>
-        <p><strong>Correo:</strong> <span id="perfil-email-txt"></span></p>
-        <button class="btn-outline" onclick="cerrarSesion()" style="margin-top: 15px; width:100%;">Cerrar Sesión</button>
+        <p style="margin-top:8px;"><strong>Correo:</strong> <span id="perfil-email-txt"></span></p>
+        <p style="margin-top:8px;"><strong>Créditos activos:</strong> <span id="perfil-creditos">2 clases disponibles</span></p>
+        <button class="btn-outline" onclick="cerrarSesion()" style="margin-top: 20px; width:100%;">Cerrar Sesión</button>
       </div>
+    </div>
+  </section>
+
+  <!-- PANEL DE ADMINISTRACIÓN INTERNO -->
+  <section id="admin-panel" class="section" style="border-top:1px solid var(--border-color);">
+    <span class="section-tag">ZONA INTERNA</span>
+    <h2>Panel de Instructor / Admin</h2>
+    <div style="max-width:400px; margin:0 auto;">
+      <button class="btn-outline" onclick="accesoAdmin()" style="width:100%;">Entrar como Administrador</button>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <p>© 2026 MOÉVA Movement & Pole Studio. Todos los derechos reservados.</p>
+    <p>© 2026 MÓEVA Movement & Pole Studio. Todos los derechos reservados.</p>
   </footer>
 
   <script src="script.js"></script>
