@@ -1,105 +1,100 @@
-const PASSWORD_ADMIN = "moeva2026";
-
-function crearCuenta(event) {
+function registrarAlumna(event) {
   event.preventDefault();
-  let nombre = document.getElementById("reg-nombre").value;
-  let email = document.getElementById("reg-email").value;
+  let nombre = document.getElementById("input-nombre").value;
+  let email = document.getElementById("input-email").value;
 
-  localStorage.setItem("moeva_usuario_nombre", nombre);
-  localStorage.setItem("moeva_usuario_email", email);
+  localStorage.setItem("moeva_nombre", nombre);
+  localStorage.setItem("moeva_email", email);
+  localStorage.setItem("moeva_creditos", "6");
+  localStorage.setItem("moeva_clase_agendada", "Ninguna seleccionada");
 
-  alert(`¡Cuenta creada con éxito! Bienvenida a MÓEVA, ${nombre}.`);
-  mostrarPerfil(nombre, email);
+  cargarDashboardAlumna(nombre, 6, "Ninguna seleccionada");
 }
 
-function mostrarPerfil(nombre, email) {
-  document.getElementById("form-registro-container").style.display = "none";
-  document.getElementById("vista-perfil").style.display = "block";
-  document.getElementById("perfil-nombre-txt").innerText = nombre;
-  document.getElementById("perfil-email-txt").innerText = email;
+function cargarDashboardAlumna(nombre, creditos, claseAgendada) {
+  document.getElementById("auth-container").style.display = "none";
+  document.getElementById("dashboard-alumna").style.display = "block";
+  document.getElementById("lbl-nombre-usuario").innerText = nombre;
+  document.getElementById("lbl-creditos").innerText = creditos;
+  if(claseAgendada && claseAgendada !== "Ninguna seleccionada") {
+    document.getElementById("mensaje-reserva").innerText = "✔ Tu clase actual agendada es: " + claseAgendada;
+  }
 }
 
 function abrirPerfil(event) {
   event.preventDefault();
-  let nombreGuardado = localStorage.getItem("moeva_usuario_nombre");
-  let emailGuardado = localStorage.getItem("moeva_usuario_email");
+  let nombre = localStorage.getItem("moeva_nombre");
+  let creditos = localStorage.getItem("moeva_creditos") || "6";
+  let claseAgendada = localStorage.getItem("moeva_clase_agendada") || "Ninguna";
 
-  if (nombreGuardado && emailGuardado) {
-    mostrarPerfil(nombreGuardado, emailGuardado);
-  } else {
-    document.getElementById("form-registro-container").style.display = "block";
-    document.getElementById("vista-perfil").style.display = "none";
-  }
-  window.location.hash = "#reservas";
-}
-
-function cerrarSesion() {
-  localStorage.removeItem("moeva_usuario_nombre");
-  localStorage.removeItem("moeva_usuario_email");
-  document.getElementById("form-registro-container").style.display = "block";
-  document.getElementById("vista-perfil").style.display = "none";
-  alert("Has cerrado sesión correctamente.");
-}
-
-// FUNCIONES DEL PANEL ADMINISTRATIVO
-function verificarAdmin() {
-  let pass = document.getElementById("admin-pass-input").value;
-  if (pass === PASSWORD_ADMIN) {
-    document.getElementById("admin-login-box").style.display = "none";
-    document.getElementById("admin-dashboard").style.display = "block";
-    alert("¡Acceso concedido al panel administrativo de MÓEVA!");
-  } else {
-    alert("Contraseña incorrecta. (Prueba con: moeva2026)");
-  }
-}
-
-function cerrarAdmin() {
-  document.getElementById("admin-login-box").style.display = "block";
-  document.getElementById("admin-dashboard").style.display = "none";
-  document.getElementById("admin-pass-input").value = "";
-}
-
-function cambiarTabAdmin(tabName) {
-  let tabs = document.querySelectorAll(".admin-tab-content");
-  tabs.forEach(t => t.style.display = "none");
-
-  let botones = document.querySelectorAll(".admin-tabs .tab-btn");
-  botones.forEach(b => b.classList.remove("active"));
-
-  if (tabName === 'alumnas') {
-    document.getElementById("tab-alumnas").style.display = "block";
-  } else if (tabName === 'reservas') {
-    document.getElementById("tab-reservas").style.display = "block";
-  } else if (tabName === 'clases') {
-    document.getElementById("tab-clases").style.display = "block";
-  } else if (tabName === 'pagos') {
-    document.getElementById("tab-pagos").style.display = "block";
-  }
-
-  event.currentTarget.classList.add("active");
-}
-
-function agregarAlumnaPrompt() {
-  let nombre = prompt("Nombre completo de la nueva alumna:");
   if (nombre) {
-    let email = prompt("Correo electrónico:");
-    let tbody = document.getElementById("tabla-alumnas-body");
-    let nuevaFila = document.createElement("tr");
-    nuevaFila.innerHTML = `
-      <td>${nombre}</td>
-      <td>${email || 'Sin correo'}</td>
-      <td>Nuevo Ingreso</td>
-      <td><button class="btn-accion">Editar</button></td>
-    `;
-    tbody.appendChild(nuevaFila);
-    alert("¡Alumna agregada exitosamente al sistema!");
+    cargarDashboardAlumna(nombre, creditos, claseAgendada);
+  } else {
+    document.getElementById("auth-container").style.display = "block";
+    document.getElementById("dashboard-alumna").style.display = "none";
   }
+  window.location.hash = "#perfil";
+}
+
+function agendarClase() {
+  let creditos = parseInt(localStorage.getItem("moeva_creditos") || "6");
+  if(creditos <= 0) {
+    alert("No tienes créditos disponibles. Adquiere un nuevo paquete en recepción.");
+    return;
+  }
+  let selectClase = document.getElementById("select-clase-agenda").value;
+  creditos -= 1;
+  localStorage.setItem("moeva_creditos", creditos);
+  localStorage.setItem("moeva_clase_agendada", selectClase);
+
+  document.getElementById("lbl-creditos").innerText = creditos;
+  document.getElementById("mensaje-reserva").innerText = "✔ ¡Cajón agendado con éxito para: " + selectClase + "!";
+  alert("¡Clase agendada correctamente! Se ha descontado 1 crédito.");
+}
+
+function guardarRequisitos(event) {
+  event.preventDefault();
+  let ficha = document.getElementById("txt-ficha-medica").value;
+  let acepto = document.getElementById("check-reglamento").checked;
+  if(acepto) {
+    localStorage.setItem("moeva_ficha", ficha);
+    alert("¡Ficha médica y reglamento guardados correctamente en tu expediente!");
+  }
+}
+
+function cerrarSesionAlumna() {
+  localStorage.removeItem("moeva_nombre");
+  localStorage.removeItem("moeva_email");
+  localStorage.removeItem("moeva_creditos");
+  localStorage.removeItem("moeva_clase_agendada");
+  document.getElementById("auth-container").style.display = "block";
+  document.getElementById("dashboard-alumna").style.display = "none";
+  alert("Sesión cerrada.");
+}
+
+function loginAdmin() {
+  let pass = document.getElementById("admin-pass").value;
+  if(pass === "moeva2026") {
+    document.getElementById("admin-login").style.display = "none";
+    document.getElementById("admin-content").style.display = "block";
+    
+    document.getElementById("admin-row-nombre").innerText = localStorage.getItem("moeva_nombre") || "Sin registro";
+    document.getElementById("admin-row-creditos").innerText = localStorage.getItem("moeva_creditos") || "-";
+    document.getElementById("admin-row-clase").innerText = localStorage.getItem("moeva_clase_agendada") || "-";
+  } else {
+    alert("Contraseña incorrecta.");
+  }
+}
+
+function logoutAdmin() {
+  document.getElementById("admin-login").style.display = "block";
+  document.getElementById("admin-content").style.display = "none";
+  document.getElementById("admin-pass").value = "";
 }
 
 window.onload = function() {
-  let nombreGuardado = localStorage.getItem("moeva_usuario_nombre");
-  let emailGuardado = localStorage.getItem("moeva_usuario_email");
-  if (nombreGuardado && emailGuardado) {
-    mostrarPerfil(nombreGuardado, emailGuardado);
+  let nombre = localStorage.getItem("moeva_nombre");
+  if(nombre) {
+    cargarDashboardAlumna(nombre, localStorage.getItem("moeva_creditos"), localStorage.getItem("moeva_clase_agendada"));
   }
-};
+}
