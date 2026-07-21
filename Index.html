@@ -3,212 +3,409 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MÓEVA | Movement & Pole Studio</title>
+  <title>MOÉVA | Movement & Pole Studio</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- ENCABEZADO -->
   <header class="header">
-    <div class="logo">MÓEVA</div>
+    <div class="logo">MOÉVA<span>.</span></div>
     <nav class="nav">
       <a href="#inicio">Inicio</a>
       <a href="#estudio">El Estudio</a>
       <a href="#clases">Clases</a>
-      <a href="#horarios">Horarios</a>
-      <a href="#precios-pole">Precios Pole</a>
+      <a href="#profesoras">Staff</a>
+      <a href="#precios-pole">Pole</a>
       <a href="#precios-ritmos">Ritmos Latinos</a>
+      <a href="#contacto">Contacto</a>
       <a href="#perfil" onclick="abrirPerfil(event)">Mi Perfil</a>
-      <a href="#reservas" class="btn-reservar">Reservar</a>
+      <a href="#admin-panel" class="btn-admin-link">Admin Studio</a>
     </nav>
   </header>
 
-  <!-- SECCIÓN INICIO -->
   <section id="inicio" class="hero">
+    <div class="hero-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+    </div>
     <div class="hero-content">
-      <span class="sub-hero">+ MOVEMENT & POLE STUDIO</span>
+      <span class="sub-hero">MOVEMENT & POLE STUDIO</span>
       <h1>Muévete desde adentro.</h1>
-      <p>Un estudio boutique donde la fuerza, el arte y el movimiento se encuentran.</p>
-      <a href="#reservas" class="btn-principal" style="display:inline-block; margin-top:20px; padding:12px 30px; text-decoration:none;">Agendar Clase Muestra</a>
+      <p>Un santuario boutique donde la fuerza, el arte y el movimiento se encuentran en perfecta armonía.</p>
+      <div class="hero-buttons">
+        <a href="#precios-pole" class="btn-principal">Ver Paquetes</a>
+        <a href="#reservas" class="btn-secundario">Agendar Clase</a>
+      </div>
     </div>
   </section>
 
-  <!-- SECCIÓN EL ESTUDIO -->
   <section id="estudio" class="section">
-    <span class="section-tag">NUESTRA FILOSOFÍA</span>
-    <h2>Un espacio diseñado para ti</h2>
-    <p class="subtitle-center">Inspirado en una estética minimalista boutique con tonos ciruela y lino, MÓEVA es un santuario seguro para explorar tu potencial físico y artístico.</p>
+    <div class="container-narrow">
+      <span class="section-tag">NUESTRA FILOSOFÍA</span>
+      <h2>Un espacio diseñado para tu evolución</h2>
+      <p class="subtitle-center">Inspirado en una estética minimalista elegante con acentos en morado ciruela y texturas cálidas, MÓEVA es un espacio seguro para explorar tu potencial físico, expresión artística y confianza.</p>
+    </div>
   </section>
 
-  <!-- SECCIÓN CLASES -->
   <section id="clases" class="section bg-alt">
-    <span class="section-tag">DISCIPLINAS</span>
-    <h2>Cada cuerpo, un camino.</h2>
-    <div class="grid-modalidades" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; text-align: left;">
-      <div class="modalidad-card" style="background:white; padding:25px; border-radius:8px; border:1px solid var(--border-color);">
-        <h3 style="color:var(--ciruela); margin-bottom:10px; font-family:'Playfair Display', serif;">Pole Fitness</h3>
-        <p style="font-size:0.9rem; color:#666;">Fuerza, resistencia y acrobacias en la barra con técnica segura.</p>
-      </div>
-      <div class="modalidad-card" style="background:white; padding:25px; border-radius:8px; border:1px solid var(--border-color);">
-        <h3 style="color:var(--ciruela); margin-bottom:10px; font-family:'Playfair Display', serif;">Exotic Pole</h3>
-        <p style="font-size:0.9rem; color:#666;">Fluidez, sensualidad, manejo de piso y expresión artística única.</p>
-      </div>
-      <div class="modalidad-card" style="background:white; padding:25px; border-radius:8px; border:1px solid var(--border-color);">
-        <h3 style="color:var(--ciruela); margin-bottom:10px; font-family:'Playfair Display', serif;">Floorwork & Stretching</h3>
-        <p style="font-size:0.9rem; color:#666;">Flexibilidad profunda, acondicionamiento y control corporal en el suelo.</p>
+    <div class="container">
+      <span class="section-tag">DISCIPLINAS</span>
+      <h2>Cada cuerpo, un camino.</h2>
+      <p class="subtitle-center">Descubre nuestras modalidades impartidas por profesionales apasionadas.</p>
+      
+      <div class="grid-modalidades">
+        <div class="modalidad-card">
+          <div class="card-icon">⚡</div>
+          <h3>Pole Fitness</h3>
+          <p>Fuerza, resistencia, acrobacias y líneas estilizadas en la barra con técnica segura.</p>
+        </div>
+        <div class="modalidad-card">
+          <div class="card-icon">✨</div>
+          <h3>Exotic Pole</h3>
+          <p>Fluidez, sensualidad, manejo de piso (floorwork) y expresión artística única.</p>
+        </div>
+        <div class="modalidad-card">
+          <div class="card-icon">🌿</div>
+          <h3>Floorwork & Stretching</h3>
+          <p>Flexibilidad profunda, movilidad articular y control corporal total en el suelo.</p>
+        </div>
+        <div class="modalidad-card">
+          <div class="card-icon">💃</div>
+          <h3>Ritmos Latinos</h3>
+          <p>Salsa, Bachata y Cumbia. Conexión, ritmo, técnica de pies y pareja.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- SECCIÓN HORARIOS -->
-  <section id="horarios" class="section">
-    <span class="section-tag">CALENDARIO</span>
-    <h2>Horarios de Clases</h2>
-    <p class="subtitle-center">Consulta los bloques disponibles de la semana.</p>
-    <div style="background:white; padding:30px; border-radius:8px; border:1px solid var(--border-color); max-width:700px; margin:0 auto; text-align:left;">
-      <p><strong>Lunes a Viernes:</strong> 07:00 AM – 09:00 PM</p>
-      <p style="margin-top:10px;"><strong>Sábados:</strong> 09:00 AM – 02:00 PM</p>
-      <p style="margin-top:10px; font-size:0.85rem; color:var(--mauve);">* Horarios sujetos a disponibilidad de cajón en barra.</p>
+  <section id="profesoras" class="section">
+    <div class="container">
+      <span class="section-tag">NUESTRO EQUIPO</span>
+      <h2>Conoce a tus Instructoras</h2>
+      <p class="subtitle-center">Profesionales certificadas dedicadas a guiarte paso a paso con seguridad y motivación.</p>
+      
+      <div class="grid-profesoras">
+        <div class="profesora-card">
+          <div class="avatar-placeholder">M</div>
+          <h3>Jenni de Diego</h3>
+          <span class="rol-profesora">Head Coach (Pole Fitness / Exotic)</span>
+          <p>Más de 6 años de experiencia impulsando a alumnas a descubrir su fuerza interior y arte en barra.</p>
+        </div>
+        <div class="profesora-card">
+          <div class="avatar-placeholder">S</div>
+          <h3>Aranza</h3>
+          <span class="rol-profesora">Instructora de Ritmos Latinos & Stretching</span>
+          <p>Especialista en conexión de pareja, expresión rítmica y flexibilidad profunda orientada al rendimiento.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- SECCIÓN PRECIOS POLE -->
   <section id="precios-pole" class="section bg-alt">
-    <span class="section-tag">TARIFAS POLE & DISCIPLINAS</span>
-    <h2>Paquetes de Pole Dance</h2>
-    <p class="subtitle-center">Pole Fitness, Exotic, Floorwork y Acondicionamiento.</p>
+    <div class="container">
+      <span class="section-tag">TARIFAS POLE & DISCIPLINAS</span>
+      <h2>Paquetes de Pole Dance</h2>
+      <p class="subtitle-center">Pole Fitness, Exotic, Floorwork y Acondicionamiento.</p>
 
-    <div class="tarifas-wrapper">
-      <div class="columna-tarifas">
-        <h3>Clases Individuales (Pole)</h3>
-        <div class="tarifa-card">
-          <div class="tarifa-info"><strong>Clase Muestra</strong><span>Prueba sin compromiso</span></div>
-          <span class="precio">$250</span>
+      <div class="tarifas-wrapper">
+        <div class="columna-tarifas">
+          <h3>Clases Individuales (Pole)</h3>
+          <div class="tarifa-card">
+            <div class="tarifa-info"><strong>Clase Muestra</strong><span>Prueba sin compromiso</span></div>
+            <span class="precio">$250</span>
+          </div>
+          <div class="tarifa-card">
+            <div class="tarifa-info"><strong>Clase Suelta</strong><span>Ven cuando quieras</span></div>
+            <span class="precio">$380</span>
+          </div>
+          <div class="tarifa-card">
+            <div class="tarifa-info"><strong>Clase Privada</strong><span>Atención personalizada</span></div>
+            <span class="precio">$600</span>
+          </div>
         </div>
-        <div class="tarifa-card">
-          <div class="tarifa-info"><strong>Clase Suelta</strong><span>Ven cuando quieras</span></div>
-          <span class="precio">$380</span>
-        </div>
-        <div class="tarifa-card">
-          <div class="tarifa-info"><strong>Clase Privada</strong><span>Atención personalizada</span></div>
-          <span class="precio">$600</span>
+
+        <div class="columna-tarifas">
+          <h3>Paquetes Mensuales (Pole)</h3>
+          <div class="tarifa-card">
+            <div class="tarifa-info"><strong>4 Clases</strong><span>Vigencia mensual</span></div>
+            <span class="precio">$900</span>
+          </div>
+          <div class="tarifa-card popular">
+            <span class="badge-pop">MÁS POPULAR</span>
+            <div class="tarifa-info"><strong>8 Clases</strong><span>Progreso constante</span></div>
+            <span class="precio">$1500</span>
+          </div>
+          <div class="tarifa-card">
+            <div class="tarifa-info"><strong>12 Clases</strong><span>Práctica avanzada</span></div>
+            <span class="precio">$1900</span>
+          </div>
+          <div class="tarifa-card">
+            <div class="tarifa-info"><strong>16 Clases</strong><span>Constancia total</span></div>
+            <span class="precio">$2200</span>
+          </div>
+          <div class="tarifa-card best">
+            <div class="tarifa-info"><strong>Ilimitado</strong><span>Sin límites al mes</span></div>
+            <span class="precio">$2600</span>
+          </div>
         </div>
       </div>
-
-      <div class="columna-tarifas">
-        <h3>Paquetes Mensuales (Pole)</h3>
-        <div class="tarifa-card">
-          <div class="tarifa-info"><strong>4 Clases</strong><span>Vigencia mensual</span></div>
-          <span class="precio">$900</span>
-        </div>
-        <div class="tarifa-card popular">
-          <span class="badge-pop">MÁS POPULAR</span>
-          <div class="tarifa-info"><strong>8 Clases</strong><span>Progreso constante</span></div>
-          <span class="precio">$1500</span>
-        </div>
-        <div class="tarifa-card">
-          <div class="tarifa-info"><strong>12 Clases</strong><span>Práctica avanzada</span></div>
-          <span class="precio">$1900</span>
-        </div>
-        <div class="tarifa-card">
-          <div class="tarifa-info"><strong>16 Clases</strong><span>Constancia total</span></div>
-          <span class="precio">$2200</span>
-        </div>
-        <div class="tarifa-card best">
-          <div class="tarifa-info"><strong>Ilimitado</strong><span>Sin límites al mes</span></div>
-          <span class="precio">$2600</span>
-        </div>
-      </div>
+      <p class="nota-vigencia">✨ Cuota de afiliación / membresía anual: $550</p>
     </div>
-    <p class="nota-vigencia">✨ Cuota de afiliación / membresía anual: $550</p>
   </section>
 
-  <!-- SECCIÓN PRECIOS RITMOS LATINOS (SEPARADOS Y ESPECÍFICOS) -->
   <section id="precios-ritmos" class="section">
-    <span class="section-tag">TARIFAS RITMOS LATINOS</span>
-    <h2>Paquetes de Ritmos Latinos</h2>
-    <p class="subtitle-center">Salsa, Bachata y Cumbia. Clases sueltas, individuales y en pareja.</p>
+    <div class="container">
+      <span class="section-tag">TARIFAS RITMOS LATINOS</span>
+      <h2>Paquetes de Ritmos Latinos</h2>
+      <p class="subtitle-center">Salsa, Bachata y Cumbia. Clases individuales y en pareja.</p>
 
-    <div class="tarifas-wrapper">
-      <div class="columna-tarifas">
-        <h3>Clases Sueltas y Afiliación</h3>
-        <div class="tarifa-card">
-          <div class="tarifa-info"><strong>Clase Suelta (Ritmos Latinos)</strong><span>Acceso a una clase puntual</span></div>
-          <span class="precio">$200</span>
-        </div>
-        <div class="tarifa-card">
-          <div class="tarifa-info"><strong>Inscripción / Afiliación Ritmos</strong><span>Pago anual único</span></div>
-          <span class="precio">$350</span>
-        </div>
-      </div>
-
-      <div class="columna-tarifas">
-        <h3>Paquetes Mensuales (Individual y Pareja)</h3>
-        <div class="tarifa-card">
-          <div class="tarifa-info"><strong>Paquete 4 Clases (Individual)</strong><span>1 clase por semana</span></div>
-          <span class="precio">$700</span>
-        </div>
-        <div class="tarifa-card popular">
-          <span class="badge-pop">FAVORITO</span>
-          <div class="tarifa-info"><strong>Paquete 4 Clases (En Pareja)</strong><span>Precio especial para dos personas</span></div>
-          <span class="precio">$1200</span>
-        </div>
-        <div class="tarifa-card">
-          <div class="tarifa-info"><strong>Paquete 8 Clases (Individual)</strong><span>2 clases por semana</span></div>
-          <span class="precio">$1200</span>
-        </div>
-        <div class="tarifa-card best">
-          <div class="tarifa-info"><strong>Paquete 8 Clases (En Pareja)</strong><span>Dos personas, constancia total</span></div>
-          <span class="precio">$2100</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECCIÓN RESERVAS Y PERFIL -->
-  <section id="reservas" class="section bg-alt">
-    <span class="section-tag">ACCESO AL ESTUDIO</span>
-    <h2>Reserva tu espacio o gestiona tu cuenta</h2>
-    
-    <div style="max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid var(--border-color); text-align: left;">
-      <div id="form-registro-container">
-        <h3 style="color:var(--ciruela); margin-bottom:15px; font-family:'Playfair Display', serif;">Crea tu cuenta MÓEVA</h3>
-        <form id="form-crear-cuenta" onsubmit="crearCuenta(event)">
-          <div style="margin-bottom: 15px;">
-            <label style="display:block; font-size:0.85rem; margin-bottom:5px;">Nombre completo:</label>
-            <input type="text" id="reg-nombre" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;">
+      <div class="tarifas-wrapper">
+        <div class="columna-tarifas">
+          <h3>Clases Sueltas y Pareja (Puntuales)</h3>
+          <div class="tarifa-card">
+            <div class="tarifa-info"><strong>Clase Individual</strong><span>Acceso a una clase</span></div>
+            <span class="precio">$200</span>
           </div>
-          <div style="margin-bottom: 15px;">
-            <label style="display:block; font-size:0.85rem; margin-bottom:5px;">Correo electrónico:</label>
-            <input type="email" id="reg-email" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;">
+          <div class="tarifa-card popular">
+            <span class="badge-pop">DUO</span>
+            <div class="tarifa-info"><strong>Clase en Pareja</strong><span>Dos personas por clase</span></div>
+            <span class="precio">$300</span>
           </div>
-          <button type="submit" class="btn-principal" style="width:100%;">Registrarme</button>
-        </form>
-      </div>
+          <div class="tarifa-card">
+            <div class="tarifa-info"><strong>Inscripción / Afiliación</strong><span>Pago anual único</span></div>
+            <span class="precio">$350</span>
+          </div>
+        </div>
 
-      <div id="vista-perfil" style="display: none;">
-        <h3 style="color:var(--ciruela); margin-bottom:15px; font-family:'Playfair Display', serif;">Mi Perfil MÓEVA</h3>
-        <p><strong>Nombre:</strong> <span id="perfil-nombre-txt"></span></p>
-        <p style="margin-top:8px;"><strong>Correo:</strong> <span id="perfil-email-txt"></span></p>
-        <p style="margin-top:8px;"><strong>Créditos activos:</strong> <span id="perfil-creditos">2 clases disponibles</span></p>
-        <button class="btn-outline" onclick="cerrarSesion()" style="margin-top: 20px; width:100%;">Cerrar Sesión</button>
+        <div class="columna-tarifas">
+          <h3>Paquetes Mensuales (Individual y Pareja)</h3>
+          <div class="tarifa-card">
+            <div class="tarifa-info"><strong>Paquete 4 Clases (Individual)</strong><span>1 clase por semana</span></div>
+            <span class="precio">$600</span>
+          </div>
+          <div class="tarifa-card">
+            <div class="tarifa-info"><strong>Paquete 4 Clases (En Pareja)</strong><span>Dos personas</span></div>
+            <span class="precio">$900</span>
+          </div>
+          <div class="tarifa-card popular">
+            <span class="badge-pop">RECOMENDADO</span>
+            <div class="tarifa-info"><strong>Paquete 8 Clases (Individual)</strong><span>2 clases por semana</span></div>
+            <span class="precio">$1000</span>
+          </div>
+          <div class="tarifa-card">
+            <div class="tarifa-info"><strong>Paquete 8 Clases (En Pareja)</strong><span>Dos personas</span></div>
+            <span class="precio">$1500</span>
+          </div>
+          <div class="tarifa-card">
+            <div class="tarifa-info"><strong>Paquete 12 Clases (Individual)</strong><span>3 clases por semana</span></div>
+            <span class="precio">$1300</span>
+          </div>
+          <div class="tarifa-card best">
+            <div class="tarifa-info"><strong>Paquete 12 Clases (En Pareja)</strong><span>Dos personas constancia total</span></div>
+            <span class="precio">$2100</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- PANEL DE ADMINISTRACIÓN INTERNO -->
-  <section id="admin-panel" class="section" style="border-top:1px solid var(--border-color);">
-    <span class="section-tag">ZONA INTERNA</span>
-    <h2>Panel de Instructor / Admin</h2>
-    <div style="max-width:400px; margin:0 auto;">
-      <button class="btn-outline" onclick="accesoAdmin()" style="width:100%;">Entrar como Administrador</button>
+  <section id="contacto" class="section bg-alt">
+    <div class="container">
+      <span class="section-tag">ENCUÉNTRANOS</span>
+      <h2>Visítanos y Conéctate</h2>
+      <p class="subtitle-center">Estamos listas para recibirte en nuestro estudio boutique.</p>
+
+      <div class="contacto-grid">
+        <div class="contacto-card">
+          <h3>📍 Ubicación del Estudio</h3>
+          <p>Calzada Zavaleta 2545 Local 108, Primer piso<br>Sta. Cruz Buenavista, Puebla</p>
+          <p style="margin-top:15px; font-size:0.85rem; color:var(--mauve);">Estacionamiento disponible y acceso seguro.</p>
+        </div>
+        <div class="contacto-card">
+          <h3>📞 Medios de Contacto</h3>
+          <p><strong>WhatsApp:</strong> +52 2224694805</p>
+          <p><strong>Correo:</strong> studiomoeva@gmail.com</p>
+          <p style="margin-top:15px;"><strong>Horarios de Atención:</strong><br>Lunes a Viernes de 7:00 AM – 9:00 PM, Sábado y Domingo 8:00 am - 10:00 am</p>
+        </div>
+        <div class="contacto-card">
+          <h3>🌐 Redes Sociales</h3>
+          <p>Síguenos para ver coreografías, tips y avisos especiales:</p>
+          <div class="social-links" style="margin-top:15px;">
+            <a href="#" class="social-btn">Instagram (@moeva.studio)</a>
+            <a href="#" class="social-btn" style="margin-top:8px;">TilTok moevastudio3</a>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <section id="reservas" class="section">
+    <div class="container-narrow">
+      <span class="section-tag">ACCESO AL ESTUDIO</span>
+      <h2>Crea tu cuenta o consulta tu Perfil</h2>
+      
+      <div class="card-form-container">
+        <div id="form-registro-container">
+          <h3>Regístrate en MOÉVA</h3>
+          <form id="form-crear-cuenta" onsubmit="crearCuenta(event)">
+            <div class="form-group">
+              <label>Nombre completo:</label>
+              <input type="text" id="reg-nombre" required placeholder="Tu nombre">
+            </div>
+            <div class="form-group">
+              <label>Correo electrónico:</label>
+              <input type="email" id="reg-email" required placeholder="tucorreo@email.com">
+            </div>
+            <button type="submit" class="btn-principal full-width">Crear Cuenta</button>
+          </form>
+        </div>
+
+        <div id="vista-perfil" style="display: none;">
+          <h3>Mi Perfil MOÉVA</h3>
+          <p><strong>Nombre:</strong> <span id="perfil-nombre-txt"></span></p>
+          <p><strong>Correo:</strong> <span id="perfil-email-txt"></span></p>
+          <p><strong>Créditos activos:</strong> <span id="perfil-creditos">2 clases disponibles</span></p>
+          <button class="btn-outline full-width" onclick="cerrarSesion()" style="margin-top: 20px;">Cerrar Sesión</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="admin-panel" class="section bg-alt" style="border-top:1px solid var(--border-color);">
+    <div class="container">
+      <span class="section-tag">GESTIÓN INTERNA</span>
+      <h2>Panel Administrativo del Estudio</h2>
+      <p class="subtitle-center">Administra alumnas, reservas en tiempo real, control de clases y pagos.</p>
+
+      <div id="admin-login-box" class="admin-auth-box">
+        <h3>Acceso Restringido</h3>
+        <p>Ingresa la contraseña de administración (contraseña por defecto: <code>moeva2026</code>)</p>
+        <input type="password" id="admin-pass-input" placeholder="Contraseña admin">
+        <button class="btn-principal" onclick="verificarAdmin()" style="margin-top: 15px;">Entrar al Sistema</button>
+      </div>
+
+      <div id="admin-dashboard" style="display: none;" class="admin-dashboard-container">
+        <div class="admin-tabs">
+          <button class="tab-btn active" onclick="cambiarTabAdmin('alumnas')">Alumnas</button>
+          <button class="tab-btn" onclick="cambiarTabAdmin('reservas')">Reservas</button>
+          <button class="tab-btn" onclick="cambiarTabAdmin('clases')">Clases</button>
+          <button class="tab-btn" onclick="cambiarTabAdmin('pagos')">Control de Pagos</button>
+          <button class="tab-btn btn-salir" onclick="cerrarAdmin()">Bloquear Admin</button>
+        </div>
+
+        <div id="tab-alumnas" class="admin-tab-content">
+          <div class="admin-flex-between">
+            <h3>Directorio de Alumnas</h3>
+            <button class="btn-principal" onclick="agregarAlumnaPrompt()">+ Registrar Alumna</button>
+          </div>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Paquete Activo</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-alumnas-body">
+              <tr>
+                <td>Carla Mendoza</td>
+                <td>carla@email.com</td>
+                <td>8 Clases Pole</td>
+                <td><button class="btn-accion">Editar</button></td>
+              </tr>
+              <tr>
+                <td>Valeria Gómez</td>
+                <td>valeria@email.com</td>
+                <td>Paquete 4 Pareja (Latino)</td>
+                <td><button class="btn-accion">Editar</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="tab-reservas" class="admin-tab-content" style="display:none;">
+          <h3>Control de Reservas de Cajón en Barra / Salón</h3>
+          <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Supervisa quién ha agendado su clase muestra o paquete mensual.</p>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Alumna</th>
+                <th>Disciplina</th>
+                <th>Horario</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Carla Mendoza</td>
+                <td>Pole Fitness</td>
+                <td>Martes 19:00 hrs</td>
+                <td><span class="badge-status activo">Confirmada</span></td>
+              </tr>
+              <tr>
+                <td>Andrea Soto</td>
+                <td>Exotic Pole</td>
+                <td>Miércoles 18:00 hrs</td>
+                <td><span class="badge-status pendiente">Pendiente pago</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="tab-clases" class="admin-tab-content" style="display:none;">
+          <h3>Gestión de Horarios y Cajones</h3>
+          <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Capacidad máxima por grupo (10 barras disponibles).</p>
+          <div class="grid-clases-admin">
+            <div class="admin-mini-card">
+              <strong>Pole Fitness - Matutino</strong>
+              <span>Lunes y Miércoles 09:00 AM (8/10 cajones)</span>
+            </div>
+            <div class="admin-mini-card">
+              <strong>Ritmos Latinos - Noche</strong>
+              <span>Martes y Jueves 20:00 PM (12/15 cupos)</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-pagos" class="admin-tab-content" style="display:none;">
+          <div class="admin-flex-between">
+            <h3>Registro de Ingresos y Afiliaciones</h3>
+            <span style="font-weight:600; color:var(--ciruela);">Total Mes: $14,250 MXN</span>
+          </div>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Concepto</th>
+                <th>Alumna</th>
+                <th>Monto</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Membresía Anual 2026</td>
+                <td>Carla Mendoza</td>
+                <td>$550</td>
+                <td><span class="badge-status activo">Pagado</span></td>
+              </tr>
+              <tr>
+                <td>Paquete 8 Clases Pole</td>
+                <td>Valeria Gómez</td>
+                <td>$1500</td>
+                <td><span class="badge-status activo">Pagado</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <footer>
-    <p>© 2026 MÓEVA Movement & Pole Studio. Todos los derechos reservados.</p>
+    <p>© 2026 MOÉVA Movement & Pole Studio. Todos los derechos reservados.</p>
   </footer>
 
   <script src="script.js"></script>
