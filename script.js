@@ -136,6 +136,12 @@ function money(n) {
     return '$' + Number(n).toLocaleString('es-MX') + ' MXN';
 }
 
+// Compatible con cuentas creadas antes de que existiera membershipStatus
+function getMembershipStatus(user) {
+    if (user.membershipStatus) return user.membershipStatus;
+    return user.membershipPaid ? 'pagada' : 'pendiente';
+}
+
 /* --------------------------- Inicialización --------------------------- */
 
 function seedDataIfNeeded() {
@@ -248,6 +254,8 @@ function handleRegister(event) {
         role: 'student',
         credits: 0,
         membershipPaid: false,
+        membershipStatus: 'pendiente',
+        membershipNote: '',
         reglamentoSigned: false,
         medicalSigned: false,
         medicalForm: null,
@@ -301,6 +309,12 @@ function renderDashboard() {
 
     document.getElementById('reglamento-status-badge').textContent = user.reglamentoSigned ? 'Firmado ✓' : 'Pendiente';
     document.getElementById('reglamento-status-badge').className = 'status-badge ' + (user.reglamentoSigned ? 'status-ok' : 'status-pending');
+
+    const membershipStatus = getMembershipStatus(user);
+    const membershipLabels = { pagada: 'Pagada ✓', exenta: 'Exenta / promoción ✓', pendiente: 'Pendiente' };
+    document.getElementById('membership-status-badge').textContent = membershipLabels[membershipStatus];
+    document.getElementById('membership-status-badge').className = 'status-badge ' + (membershipStatus === 'pendiente' ? 'status-pending' : 'status-ok');
+    document.getElementById('membership-status-note').textContent = user.membershipNote ? `(${user.membershipNote})` : '';
 
     // Reservas
     const reservations = getReservations().filter(r => r.userEmail === user.email && r.status !== 'cancelada');
@@ -864,22 +878,60 @@ function renderAdminStudents() {
         return;
     }
 
-    container.innerHTML = students.map(s => `
+    container.innerHTML = students.map(s => {
+        const membershipStatus = getMembershipStatus(s);
+        const membershipLabels = { pagada: 'Afiliación: Pagada', exenta: 'Afiliación: Exenta/promoción', pendiente: 'Afiliación: Pendiente' };
+        return `
         <div class="admin-row admin-row-student">
             <div>
                 <strong>${s.name}</strong><br>
                 <span class="muted">${s.email} · ${s.phone || 'sin teléfono'} · ${s.birthday ? 'cumpleaños: ' + s.birthday : 'sin fecha de nacimiento'}</span><br>
                 <span class="status-badge ${s.medicalSigned ? 'status-ok' : 'status-pending'}">Ficha médica: ${s.medicalSigned ? 'Completa' : 'Pendiente'}</span>
                 <span class="status-badge ${s.reglamentoSigned ? 'status-ok' : 'status-pending'}">Reglamento: ${s.reglamentoSigned ? 'Firmado' : 'Pendiente'}</span>
+                <span class="status-badge ${membershipStatus === 'pendiente' ? 'status-pending' : 'status-ok'}">${membershipLabels[membershipStatus]}${s.membershipNote ? ' — ' + s.membershipNote : ''}</span>
                 <span class="muted">· Créditos: ${s.credits >= 999 ? '∞' : s.credits}</span>
             </div>
             <div class="admin-row-actions">
                 <button class="btn-secondary sm" onclick="viewMedicalFile('${s.email}')">Ver ficha médica</button>
                 <button class="btn-secondary sm" onclick="adjustCredits('${s.email}')">Ajustar créditos</button>
+                <button class="btn-secondary sm" onclick="setMembershipStatus('${s.email}')">Afiliación</button>
                 <button class="btn-secondary sm btn-danger" onclick="deleteStudent('${s.email}')">Borrar alumna</button>
             </div>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
+}
+
+function setMembershipStatus(email) {
+    const users = getUsers();
+    const user = users[email];
+    if (!user) return;
+
+    const opciones = '1 = Pendiente\n2 = Pagada\n3 = Exenta / promoción (cortesía, descuento, etc.)';
+    const choice = prompt(`Afiliación de ${user.name}:\n${opciones}\n\nEscribe 1, 2 o 3:`, '2');
+    if (choice === null) return;
+
+    const map = { '1': 'pendiente', '2': 'pagada', '3': 'exenta' };
+    const nuevoEstatus = map[choice.trim()];
+    if (!nuevoEstatus) {
+        alert('Opción no válida. Escribe 1, 2 o 3.');
+        return;
+    }
+
+    let nota = user.membershipNote || '';
+    if (nuevoEstatus === 'exenta' || nuevoEstatus === 'pagada') {
+        const notaInput = prompt('Nota opcional (ej. "Promoción verano 2026", "50% descuento", "Cortesía"):', nota);
+        if (notaInput !== null) nota = notaInput.trim();
+    } else {
+        nota = '';
+    }
+
+    user.membershipStatus = nuevoEstatus;
+    user.membershipPaid = nuevoEstatus !== 'pendiente';
+    user.membershipNote = nota;
+    saveUsers(users);
+    renderAdminStudents();
+    if (currentUser() && currentUser().email === email) renderDashboard();
+    alert('Estatus de afiliación actualizado.');
 }
 
 function deleteStudent(email) {
