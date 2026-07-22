@@ -91,7 +91,7 @@ ul {
     min-height: 80vh;
     background:
         linear-gradient(160deg, rgba(74,35,90,0.75) 0%, rgba(74,35,90,0.6) 55%, rgba(155,120,164,0.65) 130%),
-        url('images/estudio.jpg') center 40%/cover no-repeat;
+        url('estudio.jpg') center 40%/cover no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;
