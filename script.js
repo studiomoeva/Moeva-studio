@@ -844,9 +844,36 @@ function renderAdminStudents() {
             <div class="admin-row-actions">
                 <button class="btn-secondary sm" onclick="viewMedicalFile('${s.email}')">Ver ficha médica</button>
                 <button class="btn-secondary sm" onclick="adjustCredits('${s.email}')">Ajustar créditos</button>
+                <button class="btn-secondary sm btn-danger" onclick="deleteStudent('${s.email}')">Borrar alumna</button>
             </div>
         </div>
     `).join('');
+}
+
+function deleteStudent(email) {
+    const users = getUsers();
+    const user = users[email];
+    if (!user) return;
+
+    const confirmado = confirm(`¿Seguro que quieres borrar a "${user.name}" (${email})?\n\nEsto elimina su cuenta, ficha médica, créditos y reservas. Esta acción no se puede deshacer.`);
+    if (!confirmado) return;
+
+    // Borra la alumna
+    delete users[email];
+    saveUsers(users);
+
+    // Borra sus reservas
+    const reservations = getReservations().filter(r => r.userEmail !== email);
+    saveReservations(reservations);
+
+    // Borra sus compras/pagos pendientes o confirmados
+    const purchases = loadJSON('moeva_purchases', []).filter(p => p.userEmail !== email);
+    saveJSON('moeva_purchases', purchases);
+
+    renderAdminStudents();
+    renderAdminPurchases();
+    renderAdminReservations();
+    alert('Alumna eliminada correctamente.');
 }
 
 function viewMedicalFile(email) {
