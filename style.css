@@ -782,6 +782,18 @@ ul {
     color: var(--color-white);
 }
 
+.admin-subheading {
+    color: var(--color-mauve-light);
+    font-family: var(--font-heading);
+    margin: 1.5rem 0 0.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.admin-subheading:first-child {
+    margin-top: 0;
+}
+
 .admin-row .btn-primary {
     background: var(--color-gold);
 }
