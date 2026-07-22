@@ -367,20 +367,59 @@ function cancelBooking(id) {
 
 /* ------------------------------ Ficha médica ------------------------------ */
 
+function toggleMinorFields() {
+    const checked = document.getElementById('med-is-minor').checked;
+    document.getElementById('minor-fields').classList.toggle('hidden', !checked);
+}
+
 function openMedicalForm() {
     const user = currentUser();
     if (!user) return;
     const form = document.getElementById('medical-form');
+    form.reset();
+    document.getElementById('minor-fields').classList.add('hidden');
+
     if (user.medicalForm) {
-        form.elements['med-name'].value = user.medicalForm.nombre || user.name;
-        form.elements['med-age'].value = user.medicalForm.edad || '';
-        form.elements['med-conditions'].value = user.medicalForm.condiciones || '';
-        form.elements['med-allergies'].value = user.medicalForm.alergias || '';
-        form.elements['med-emergency-name'].value = user.medicalForm.contactoEmergencia || '';
-        form.elements['med-emergency-phone'].value = user.medicalForm.telefonoEmergencia || '';
+        const m = user.medicalForm;
+        form.elements['med-name'].value = m.nombre || user.name;
+        form.elements['med-birthday'].value = m.fechaNacimiento || '';
+        form.elements['med-age'].value = m.edad || '';
+        form.elements['med-phone'].value = m.telefono || '';
+        form.elements['med-email'].value = m.correo || user.email;
+        form.elements['med-address'].value = m.domicilio || '';
+        form.elements['med-emergency-name'].value = m.contactoEmergenciaNombre || '';
+        form.elements['med-emergency-relation'].value = m.contactoEmergenciaParentesco || '';
+        form.elements['med-emergency-phone'].value = m.contactoEmergenciaTelefono || '';
+        form.elements['med-emergency-phone-alt'].value = m.contactoEmergenciaTelefonoAlt || '';
+        form.elements['med-current-injury'].value = m.lesionActual || '';
+        form.elements['med-past-injuries'].value = m.lesionesAnteriores || '';
+        form.elements['med-surgeries'].value = m.cirugias || '';
+        (m.condiciones || []).forEach(v => {
+            const box = [...form.elements['med-cond']].find(c => c.value === v);
+            if (box) box.checked = true;
+        });
+        form.elements['med-cond-details'].value = m.condicionesDetalle || '';
+        form.elements['med-medication'].value = m.medicamentos || '';
+        form.elements['med-restriction'].value = m.restriccionMedica || '';
+        form.elements['med-authorization'].value = m.autorizacionMedica || 'Sí';
+        form.elements['med-blood-type'].value = m.tipoSangre || '';
+        form.elements['med-allergies'].value = m.alergias || '';
+        form.elements['med-additional'].value = m.infoAdicional || '';
+        form.elements['med-accept-declarations'].checked = !!m.aceptaDeclaraciones;
+        form.elements['med-emergency-authorization'].value = m.autorizacionEmergencia || form.elements['med-emergency-authorization'].value;
+        form.elements['med-image-use'].value = m.usoImagen || form.elements['med-image-use'].value;
+        if (m.esMenor) {
+            document.getElementById('med-is-minor').checked = true;
+            document.getElementById('minor-fields').classList.remove('hidden');
+            form.elements['med-guardian-name'].value = m.tutorNombre || '';
+            form.elements['med-guardian-relation'].value = m.tutorParentesco || '';
+            form.elements['med-guardian-phone'].value = m.tutorTelefono || '';
+            form.elements['med-guardian-accept'].checked = !!m.tutorAcepta;
+        }
+        form.elements['med-signature'].value = m.firma || '';
     } else {
-        form.reset();
         form.elements['med-name'].value = user.name;
+        form.elements['med-email'].value = user.email;
     }
     document.getElementById('medical-modal').classList.remove('hidden');
 }
@@ -391,15 +430,44 @@ function saveMedicalForm(event) {
     const user = currentUser();
     if (!user) return;
     const form = event.target;
+    const isMinor = form.elements['med-is-minor'].checked;
+
+    const condiciones = [...form.elements['med-cond']]
+        .filter(c => c.checked)
+        .map(c => c.value);
 
     const users = getUsers();
     users[user.email].medicalForm = {
         nombre: form.elements['med-name'].value,
+        fechaNacimiento: form.elements['med-birthday'].value,
         edad: form.elements['med-age'].value,
-        condiciones: form.elements['med-conditions'].value,
+        telefono: form.elements['med-phone'].value,
+        correo: form.elements['med-email'].value,
+        domicilio: form.elements['med-address'].value,
+        contactoEmergenciaNombre: form.elements['med-emergency-name'].value,
+        contactoEmergenciaParentesco: form.elements['med-emergency-relation'].value,
+        contactoEmergenciaTelefono: form.elements['med-emergency-phone'].value,
+        contactoEmergenciaTelefonoAlt: form.elements['med-emergency-phone-alt'].value,
+        lesionActual: form.elements['med-current-injury'].value,
+        lesionesAnteriores: form.elements['med-past-injuries'].value,
+        cirugias: form.elements['med-surgeries'].value,
+        condiciones: condiciones,
+        condicionesDetalle: form.elements['med-cond-details'].value,
+        medicamentos: form.elements['med-medication'].value,
+        restriccionMedica: form.elements['med-restriction'].value,
+        autorizacionMedica: form.elements['med-authorization'].value,
+        tipoSangre: form.elements['med-blood-type'].value,
         alergias: form.elements['med-allergies'].value,
-        contactoEmergencia: form.elements['med-emergency-name'].value,
-        telefonoEmergencia: form.elements['med-emergency-phone'].value,
+        infoAdicional: form.elements['med-additional'].value,
+        aceptaDeclaraciones: form.elements['med-accept-declarations'].checked,
+        autorizacionEmergencia: form.elements['med-emergency-authorization'].value,
+        usoImagen: form.elements['med-image-use'].value,
+        esMenor: isMinor,
+        tutorNombre: isMinor ? form.elements['med-guardian-name'].value : '',
+        tutorParentesco: isMinor ? form.elements['med-guardian-relation'].value : '',
+        tutorTelefono: isMinor ? form.elements['med-guardian-phone'].value : '',
+        tutorAcepta: isMinor ? form.elements['med-guardian-accept'].checked : false,
+        firma: form.elements['med-signature'].value,
         firmadoEl: new Date().toISOString()
     };
     users[user.email].medicalSigned = true;
@@ -789,12 +857,35 @@ function viewMedicalFile(email) {
         return;
     }
     const f = user.medicalForm;
+    const condiciones = (f.condiciones && f.condiciones.length) ? f.condiciones.join(', ') : 'Ninguna reportada';
     alert(
-        `Ficha médica de ${user.name}\n\n` +
-        `Edad: ${f.edad || '-'}\n` +
-        `Condiciones médicas: ${f.condiciones || 'Ninguna reportada'}\n` +
+        `CARTA RESPONSIVA Y REGISTRO DE SALUD — ${user.name}\n\n` +
+        `--- Datos personales ---\n` +
+        `Fecha de nacimiento: ${f.fechaNacimiento || '-'}   Edad: ${f.edad || '-'}\n` +
+        `Teléfono: ${f.telefono || '-'}\n` +
+        `Correo: ${f.correo || '-'}\n` +
+        `Domicilio: ${f.domicilio || '-'}\n\n` +
+        `--- Contacto de emergencia ---\n` +
+        `${f.contactoEmergenciaNombre || '-'} (${f.contactoEmergenciaParentesco || '-'})\n` +
+        `Tel: ${f.contactoEmergenciaTelefono || '-'}  Alt: ${f.contactoEmergenciaTelefonoAlt || '-'}\n\n` +
+        `--- Antecedentes de salud ---\n` +
+        `Lesión actual: ${f.lesionActual || 'No reporta'}\n` +
+        `Lesiones anteriores: ${f.lesionesAnteriores || 'No reporta'}\n` +
+        `Cirugías: ${f.cirugias || 'No reporta'}\n` +
+        `Condiciones marcadas: ${condiciones}\n` +
+        `Detalles: ${f.condicionesDetalle || '-'}\n` +
+        `Medicamentos: ${f.medicamentos || 'No reporta'}\n` +
+        `Restricción médica: ${f.restriccionMedica || 'No reporta'}\n` +
+        `Autorización médica para ejercicio: ${f.autorizacionMedica || '-'}\n` +
+        `Tipo de sangre: ${f.tipoSangre || '-'}\n` +
         `Alergias: ${f.alergias || 'Ninguna reportada'}\n` +
-        `Contacto de emergencia: ${f.contactoEmergencia || '-'} (${f.telefonoEmergencia || '-'})\n` +
+        `Info adicional: ${f.infoAdicional || '-'}\n\n` +
+        `--- Autorizaciones ---\n` +
+        `Emergencia: ${f.autorizacionEmergencia || '-'}\n` +
+        `Uso de imagen: ${f.usoImagen || '-'}\n` +
+        (f.esMenor ? `\n--- Es menor de edad ---\nTutor: ${f.tutorNombre || '-'} (${f.tutorParentesco || '-'})  Tel: ${f.tutorTelefono || '-'}\nTutor aceptó: ${f.tutorAcepta ? 'Sí' : 'No'}\n` : '') +
+        `\nDeclaraciones aceptadas: ${f.aceptaDeclaraciones ? 'Sí' : 'No'}\n` +
+        `Firma: ${f.firma || '-'}\n` +
         `Firmada el: ${f.firmadoEl ? new Date(f.firmadoEl).toLocaleDateString('es-MX') : '-'}`
     );
 }
