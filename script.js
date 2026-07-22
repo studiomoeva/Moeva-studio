@@ -69,14 +69,22 @@ const DEFAULT_SCHEDULE = [
 ];
 
 const DEFAULT_PACKAGES = [
-    { id: 'muestra', nombre: 'Clase muestra', precio: 250, creditos: 1 },
-    { id: 'suelta', nombre: 'Clase suelta', precio: 380, creditos: 1 },
-    { id: 'privada', nombre: 'Clase privada', precio: 600, creditos: 1 },
-    { id: 'p4', nombre: '4 clases', precio: 900, creditos: 4 },
-    { id: 'p8', nombre: '8 clases', precio: 1500, creditos: 8 },
-    { id: 'p12', nombre: '12 clases', precio: 1900, creditos: 12 },
-    { id: 'p16', nombre: '16 clases', precio: 2200, creditos: 16 },
-    { id: 'ilimitado', nombre: 'Ilimitado', precio: 2600, creditos: 999 }
+    { id: 'muestra', nombre: 'Clase muestra', precio: 250, creditos: 1, categoria: 'pole' },
+    { id: 'suelta', nombre: 'Clase suelta', precio: 380, creditos: 1, categoria: 'pole' },
+    { id: 'privada', nombre: 'Clase privada', precio: 600, creditos: 1, categoria: 'pole' },
+    { id: 'p4', nombre: '4 clases', precio: 900, creditos: 4, categoria: 'pole' },
+    { id: 'p8', nombre: '8 clases', precio: 1500, creditos: 8, categoria: 'pole' },
+    { id: 'p12', nombre: '12 clases', precio: 1900, creditos: 12, categoria: 'pole' },
+    { id: 'p16', nombre: '16 clases', precio: 2200, creditos: 16, categoria: 'pole' },
+    { id: 'ilimitado', nombre: 'Ilimitado', precio: 2600, creditos: 999, categoria: 'pole' },
+    { id: 'ritmos-individual', nombre: 'Ritmos Latinos — Clase individual', precio: 200, creditos: 1, categoria: 'ritmos' },
+    { id: 'ritmos-pareja', nombre: 'Ritmos Latinos — Clase en pareja (2 personas)', precio: 300, creditos: 1, categoria: 'ritmos' },
+    { id: 'ritmos-4-ind', nombre: 'Ritmos Latinos — 4 clases (Individual)', precio: 600, creditos: 4, categoria: 'ritmos' },
+    { id: 'ritmos-8-ind', nombre: 'Ritmos Latinos — 8 clases (Individual)', precio: 1000, creditos: 8, categoria: 'ritmos' },
+    { id: 'ritmos-12-ind', nombre: 'Ritmos Latinos — 12 clases (Individual)', precio: 1300, creditos: 12, categoria: 'ritmos' },
+    { id: 'ritmos-4-pareja', nombre: 'Ritmos Latinos — 4 clases (Pareja)', precio: 900, creditos: 4, categoria: 'ritmos' },
+    { id: 'ritmos-8-pareja', nombre: 'Ritmos Latinos — 8 clases (Pareja)', precio: 1500, creditos: 8, categoria: 'ritmos' },
+    { id: 'ritmos-12-pareja', nombre: 'Ritmos Latinos — 12 clases (Pareja)', precio: 2100, creditos: 12, categoria: 'ritmos' }
 ];
 
 /* Cuenta de administración por defecto — CAMBIA esta contraseña desde el
@@ -137,7 +145,25 @@ function seedDataIfNeeded() {
         saveUsers(users);
     }
     if (!localStorage.getItem(STORAGE_KEYS.schedule)) saveSchedule(DEFAULT_SCHEDULE);
-    if (!localStorage.getItem(STORAGE_KEYS.packages)) savePackages(DEFAULT_PACKAGES);
+    if (!localStorage.getItem(STORAGE_KEYS.packages)) {
+        savePackages(DEFAULT_PACKAGES);
+    } else {
+        // Migración: si el navegador ya tenía paquetes guardados de una
+        // versión anterior sin Ritmos Latinos, se agregan sin perder
+        // los precios que el staff ya haya editado.
+        const existing = getPackages();
+        const tieneRitmos = existing.some(p => p.categoria === 'ritmos');
+        if (!tieneRitmos) {
+            const faltantes = DEFAULT_PACKAGES.filter(p => p.categoria === 'ritmos');
+            savePackages([...existing, ...faltantes]);
+        }
+        // Asegura que los paquetes viejos de pole tengan categoría asignada
+        const necesitaCategoria = existing.some(p => !p.categoria);
+        if (necesitaCategoria) {
+            const actualizados = getPackages().map(p => p.categoria ? p : { ...p, categoria: 'pole' });
+            savePackages(actualizados);
+        }
+    }
     if (!localStorage.getItem(STORAGE_KEYS.disciplines)) saveDisciplines(DEFAULT_DISCIPLINES);
     if (!localStorage.getItem(STORAGE_KEYS.reservations)) saveReservations([]);
 }
@@ -502,9 +528,15 @@ function populatePackageOptions() {
     const packages = getPackages();
     const select = document.getElementById('checkout-package');
     if (!select) return;
-    select.innerHTML = packages.map(p =>
-        `<option value="${p.id}">${p.nombre} — ${money(p.precio)}</option>`
-    ).join('');
+    const pole = packages.filter(p => p.categoria !== 'ritmos');
+    const ritmos = packages.filter(p => p.categoria === 'ritmos');
+    select.innerHTML =
+        `<optgroup label="Pole y Disciplinas">` +
+        pole.map(p => `<option value="${p.id}">${p.nombre} — ${money(p.precio)}</option>`).join('') +
+        `</optgroup>` +
+        `<optgroup label="Ritmos Latinos">` +
+        ritmos.map(p => `<option value="${p.id}">${p.nombre} — ${money(p.precio)}</option>`).join('') +
+        `</optgroup>`;
 }
 
 function openCheckoutModal() {
@@ -979,15 +1011,22 @@ function renderAdminPackages() {
     const container = document.getElementById('admin-packages-list');
     if (!container) return;
     const packages = getPackages();
+    const pole = packages.map((p, i) => ({ p, i })).filter(x => x.p.categoria !== 'ritmos');
+    const ritmos = packages.map((p, i) => ({ p, i })).filter(x => x.p.categoria === 'ritmos');
 
-    container.innerHTML = packages.map((p, index) => `
+    const fila = ({ p, i }) => `
         <div class="admin-row">
             <div><strong>${p.nombre}</strong> — ${money(p.precio)} (${p.creditos >= 999 ? '∞' : p.creditos} créditos)</div>
             <div class="admin-row-actions">
-                <button class="btn-secondary sm" onclick="editPackage(${index})">Editar</button>
+                <button class="btn-secondary sm" onclick="editPackage(${i})">Editar</button>
             </div>
-        </div>
-    `).join('');
+        </div>`;
+
+    container.innerHTML =
+        `<h4 class="admin-subheading">Pole y Disciplinas</h4>` +
+        pole.map(fila).join('') +
+        `<h4 class="admin-subheading">Ritmos Latinos</h4>` +
+        ritmos.map(fila).join('');
 }
 
 function editPackage(index) {
