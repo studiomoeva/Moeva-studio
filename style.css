@@ -772,6 +772,16 @@ ul {
     color: var(--color-plum-dark);
 }
 
+.admin-row .btn-danger {
+    border-color: #d9534f;
+    color: #ff8a85;
+}
+
+.admin-row .btn-danger:hover {
+    background: #d9534f;
+    color: var(--color-white);
+}
+
 .admin-row .btn-primary {
     background: var(--color-gold);
 }
