@@ -1,196 +1,94 @@
 /* ==========================================================================
-   MOÉVA — Lógica del sitio
-   Todo se guarda en localStorage del navegador (no hay servidor/base de
-   datos real). Esto es suficiente para una tienda pequeña que administra
-   su propio equipo desde el mismo navegador/estudio, pero OJO:
-   - Las contraseñas se guardan en texto simple, no está cifrado.
-   - Si el cliente borra datos del navegador o cambia de equipo, se pierde
-     la información. Para algo más robusto a futuro se necesitaría un
-     backend real (Firebase, un servidor propio, etc.).
+   MOÉVA — Lógica del sitio (conectado a Supabase)
+   Los datos (alumnas, reservas, compras, horarios, paquetes) viven en una
+   base de datos real en Supabase, compartida entre todos los dispositivos.
+   Las contraseñas se guardan con hash (no en texto plano). El acceso de
+   staff usa un token de sesión temporal (12 horas) en vez de reenviar la
+   contraseña en cada acción.
    ========================================================================== */
 
-const STORAGE_KEYS = {
-    users: 'moeva_users',
-    reservations: 'moeva_reservations',
-    schedule: 'moeva_schedule',
-    packages: 'moeva_packages',
-    disciplines: 'moeva_disciplines',
-    session: 'moeva_session',
-    adminSession: 'moeva_admin_session'
-};
+const SUPABASE_URL = 'https://pizpweghuneuzxtfpiqb.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpenB3ZWdodW5ldXp4dGZwaXFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTY3MDMsImV4cCI6MjEwMDI5MjcwM30.bKtjGt2v6h3wyDiIu4VsLA39cHgONsrVYoJ4UKLFW4g';
 
-/* -------------------------- Datos por defecto -------------------------- */
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const DEFAULT_DISCIPLINES = [
-    'Pole Fitness', 'Exotic Pole', 'Exotic Principiantes', 'Acondicionamiento',
-    'Urbano', 'Floorwork', 'Stretching', 'Ritmos Latinos'
-];
+const SESSION_KEY = 'moeva_session_email';
+const ADMIN_TOKEN_KEY = 'moeva_admin_token';
 
-const DEFAULT_SCHEDULE = [
-    { day: 'Lunes', time: '7:00 AM', discipline: 'Acondicionamiento' },
-    { day: 'Martes', time: '7:00 AM', discipline: 'Exotic Pole' },
-    { day: 'Miércoles', time: '7:00 AM', discipline: 'Floorwork' },
-    { day: 'Jueves', time: '7:00 AM', discipline: 'Pole Fitness' },
-    { day: 'Viernes', time: '7:00 AM', discipline: 'Pole Fitness' },
-    { day: 'Lunes', time: '8:00 AM', discipline: 'Pole Fitness' },
-    { day: 'Martes', time: '8:00 AM', discipline: 'Exotic Pole' },
-    { day: 'Miércoles', time: '8:00 AM', discipline: 'Exotic Principiantes' },
-    { day: 'Jueves', time: '8:00 AM', discipline: 'Stretching' },
-    { day: 'Viernes', time: '8:00 AM', discipline: 'Exotic Pole' },
-    { day: 'Sábado', time: '8:00 AM', discipline: 'Exotic Pole' },
-    { day: 'Lunes', time: '9:00 AM', discipline: 'Floorwork' },
-    { day: 'Martes', time: '9:00 AM', discipline: 'Stretching' },
-    { day: 'Miércoles', time: '9:00 AM', discipline: 'Pole Fitness' },
-    { day: 'Jueves', time: '9:00 AM', discipline: 'Urbano' },
-    { day: 'Viernes', time: '9:00 AM', discipline: 'Floorwork' },
-    { day: 'Sábado', time: '9:00 AM', discipline: 'Stretching' },
-    { day: 'Lunes', time: '5:00 PM', discipline: 'Exotic Pole' },
-    { day: 'Martes', time: '5:00 PM', discipline: 'Acondicionamiento' },
-    { day: 'Miércoles', time: '5:00 PM', discipline: 'Pole Fitness' },
-    { day: 'Jueves', time: '5:00 PM', discipline: 'Pole Fitness' },
-    { day: 'Viernes', time: '5:00 PM', discipline: 'Pole Fitness' },
-    { day: 'Lunes', time: '6:00 PM', discipline: 'Acondicionamiento' },
-    { day: 'Martes', time: '6:00 PM', discipline: 'Pole Fitness' },
-    { day: 'Miércoles', time: '6:00 PM', discipline: 'Urbano' },
-    { day: 'Jueves', time: '6:00 PM', discipline: 'Pole Fitness' },
-    { day: 'Viernes', time: '6:00 PM', discipline: 'Floorwork' },
-    { day: 'Lunes', time: '7:00 PM', discipline: 'Stretching' },
-    { day: 'Martes', time: '7:00 PM', discipline: 'Exotic Principiantes' },
-    { day: 'Miércoles', time: '7:00 PM', discipline: 'Exotic Pole' },
-    { day: 'Jueves', time: '7:00 PM', discipline: 'Acondicionamiento' },
-    { day: 'Viernes', time: '7:00 PM', discipline: 'Exotic Pole' },
-    { day: 'Lunes', time: '8:00 PM', discipline: 'Pole Fitness' },
-    { day: 'Martes', time: '8:00 PM', discipline: 'Stretching' },
-    { day: 'Miércoles', time: '8:00 PM', discipline: 'Floorwork' },
-    { day: 'Jueves', time: '8:00 PM', discipline: 'Exotic Pole' },
-    { day: 'Viernes', time: '8:00 PM', discipline: 'Ritmos Latinos' },
-    { day: 'Domingo', time: '9:00 AM', discipline: 'Ritmos Latinos' },
-    { day: 'Domingo', time: '10:00 AM', discipline: 'Ritmos Latinos' }
-];
-
-const DEFAULT_PACKAGES = [
-    { id: 'muestra', nombre: 'Clase muestra', precio: 250, creditos: 1, categoria: 'pole' },
-    { id: 'suelta', nombre: 'Clase suelta', precio: 380, creditos: 1, categoria: 'pole' },
-    { id: 'privada', nombre: 'Clase privada', precio: 600, creditos: 1, categoria: 'pole' },
-    { id: 'p4', nombre: '4 clases', precio: 900, creditos: 4, categoria: 'pole' },
-    { id: 'p8', nombre: '8 clases', precio: 1500, creditos: 8, categoria: 'pole' },
-    { id: 'p12', nombre: '12 clases', precio: 1900, creditos: 12, categoria: 'pole' },
-    { id: 'p16', nombre: '16 clases', precio: 2200, creditos: 16, categoria: 'pole' },
-    { id: 'ilimitado', nombre: 'Ilimitado', precio: 2600, creditos: 999, categoria: 'pole' },
-    { id: 'ritmos-individual', nombre: 'Ritmos Latinos — Clase individual', precio: 200, creditos: 1, categoria: 'ritmos' },
-    { id: 'ritmos-pareja', nombre: 'Ritmos Latinos — Clase en pareja (2 personas)', precio: 300, creditos: 1, categoria: 'ritmos' },
-    { id: 'ritmos-4-ind', nombre: 'Ritmos Latinos — 4 clases (Individual)', precio: 600, creditos: 4, categoria: 'ritmos' },
-    { id: 'ritmos-8-ind', nombre: 'Ritmos Latinos — 8 clases (Individual)', precio: 1000, creditos: 8, categoria: 'ritmos' },
-    { id: 'ritmos-12-ind', nombre: 'Ritmos Latinos — 12 clases (Individual)', precio: 1300, creditos: 12, categoria: 'ritmos' },
-    { id: 'ritmos-4-pareja', nombre: 'Ritmos Latinos — 4 clases (Pareja)', precio: 900, creditos: 4, categoria: 'ritmos' },
-    { id: 'ritmos-8-pareja', nombre: 'Ritmos Latinos — 8 clases (Pareja)', precio: 1500, creditos: 8, categoria: 'ritmos' },
-    { id: 'ritmos-12-pareja', nombre: 'Ritmos Latinos — 12 clases (Pareja)', precio: 2100, creditos: 12, categoria: 'ritmos' }
-];
-
-/* Cuenta de administración por defecto — CAMBIA esta contraseña desde el
-   panel o directamente aquí antes de publicar el sitio. */
-const DEFAULT_ADMIN = {
-    email: 'admin@moeva.studio',
-    password: 'moeva2026',
-    name: 'Administración MOÉVA',
-    role: 'admin'
-};
+/* Caché en memoria de la alumna actual y del contenido público del sitio */
+let CURRENT_STUDENT = null;
+let PACKAGES = [];
+let SCHEDULE = [];
+let DISCIPLINES = [];
+const DAYS_ORDER = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
 /* ------------------------------ Utilidades ------------------------------ */
-
-function loadJSON(key, fallback) {
-    try {
-        const raw = localStorage.getItem(key);
-        return raw ? JSON.parse(raw) : fallback;
-    } catch (e) {
-        console.error('Error leyendo', key, e);
-        return fallback;
-    }
-}
-
-function saveJSON(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
-}
-
-function uid() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-}
-
-function getUsers() { return loadJSON(STORAGE_KEYS.users, {}); }
-function saveUsers(u) { saveJSON(STORAGE_KEYS.users, u); }
-function getReservations() { return loadJSON(STORAGE_KEYS.reservations, []); }
-function saveReservations(r) { saveJSON(STORAGE_KEYS.reservations, r); }
-function getSchedule() { return loadJSON(STORAGE_KEYS.schedule, DEFAULT_SCHEDULE); }
-function saveSchedule(s) { saveJSON(STORAGE_KEYS.schedule, s); }
-function getPackages() { return loadJSON(STORAGE_KEYS.packages, DEFAULT_PACKAGES); }
-function savePackages(p) { saveJSON(STORAGE_KEYS.packages, p); }
-function getDisciplines() { return loadJSON(STORAGE_KEYS.disciplines, DEFAULT_DISCIPLINES); }
-function saveDisciplines(d) { saveJSON(STORAGE_KEYS.disciplines, d); }
-
-function getSession() { return localStorage.getItem(STORAGE_KEYS.session); }
-function setSession(email) { localStorage.setItem(STORAGE_KEYS.session, email || ''); }
-function getAdminSession() { return localStorage.getItem(STORAGE_KEYS.adminSession) === 'true'; }
-function setAdminSession(val) { localStorage.setItem(STORAGE_KEYS.adminSession, val ? 'true' : 'false'); }
 
 function money(n) {
     return '$' + Number(n).toLocaleString('es-MX') + ' MXN';
 }
 
-// Compatible con cuentas creadas antes de que existiera membershipStatus
 function getMembershipStatus(user) {
-    if (user.membershipStatus) return user.membershipStatus;
-    return user.membershipPaid ? 'pagada' : 'pendiente';
+    return user.membership_status || 'pendiente';
+}
+
+async function callRPC(name, params) {
+    const { data, error } = await supabase.rpc(name, params);
+    if (error) throw error;
+    return data;
+}
+
+function friendlyError(e) {
+    return (e && e.message) ? e.message : 'Ocurrió un error. Intenta de nuevo.';
+}
+
+/* --------------------------- Contenido público --------------------------- */
+
+async function loadAppContent() {
+    const { data, error } = await supabase.from('app_content').select('key,value');
+    if (error) { console.error(error); return; }
+    for (const row of data) {
+        if (row.key === 'packages') PACKAGES = row.value;
+        if (row.key === 'schedule') SCHEDULE = row.value;
+        if (row.key === 'disciplines') DISCIPLINES = row.value;
+    }
 }
 
 /* --------------------------- Inicialización --------------------------- */
 
-function seedDataIfNeeded() {
-    const users = getUsers();
-    if (!users[DEFAULT_ADMIN.email]) {
-        users[DEFAULT_ADMIN.email] = { ...DEFAULT_ADMIN, credits: 0, reservationsCount: 0 };
-        saveUsers(users);
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.schedule)) saveSchedule(DEFAULT_SCHEDULE);
-    if (!localStorage.getItem(STORAGE_KEYS.packages)) {
-        savePackages(DEFAULT_PACKAGES);
-    } else {
-        // Migración: si el navegador ya tenía paquetes guardados de una
-        // versión anterior sin Ritmos Latinos, se agregan sin perder
-        // los precios que el staff ya haya editado.
-        const existing = getPackages();
-        const tieneRitmos = existing.some(p => p.categoria === 'ritmos');
-        if (!tieneRitmos) {
-            const faltantes = DEFAULT_PACKAGES.filter(p => p.categoria === 'ritmos');
-            savePackages([...existing, ...faltantes]);
-        }
-        // Asegura que los paquetes viejos de pole tengan categoría asignada
-        const necesitaCategoria = existing.some(p => !p.categoria);
-        if (necesitaCategoria) {
-            const actualizados = getPackages().map(p => p.categoria ? p : { ...p, categoria: 'pole' });
-            savePackages(actualizados);
-        }
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.disciplines)) saveDisciplines(DEFAULT_DISCIPLINES);
-    if (!localStorage.getItem(STORAGE_KEYS.reservations)) saveReservations([]);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    seedDataIfNeeded();
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadAppContent();
     renderScheduleTable();
     populateDisciplineSelects();
     populateScheduleSelects();
     populatePackageOptions();
+    populateGuestPackageOptions();
 
-    const session = getSession();
-    if (session) {
-        const users = getUsers();
-        if (users[session]) {
-            showDashboard(users[session]);
+    // Sesión de alumna (si ya había iniciado sesión en este navegador)
+    const savedEmail = localStorage.getItem(SESSION_KEY);
+    if (savedEmail) {
+        try {
+            const student = await callRPC('get_student', { p_email: savedEmail });
+            if (student) {
+                CURRENT_STUDENT = student;
+                showDashboard(student);
+            } else {
+                localStorage.removeItem(SESSION_KEY);
+            }
+        } catch (e) {
+            localStorage.removeItem(SESSION_KEY);
         }
     }
 
-    if (getAdminSession()) {
-        showAdminPanel();
+    // Sesión de staff (token guardado en esta pestaña/navegador)
+    const savedToken = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+    if (savedToken) {
+        try {
+            await callRPC('admin_list_students', { p_token: savedToken });
+            showAdminPanel();
+        } catch (e) {
+            sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+        }
     }
 });
 
@@ -213,29 +111,27 @@ function switchAuthTab(tab) {
     }
 }
 
-function handleLogin(event) {
+async function handleLogin(event) {
     event.preventDefault();
     const email = document.getElementById('login-email').value.trim().toLowerCase();
     const password = document.getElementById('login-password').value;
 
-    const users = getUsers();
-    const user = users[email];
-
-    if (!user || user.password !== password) {
-        alert('Correo o contraseña incorrectos.');
-        return;
+    try {
+        const student = await callRPC('login_student', { p_email: email, p_password: password });
+        if (!student) {
+            alert('Correo o contraseña incorrectos.');
+            return;
+        }
+        CURRENT_STUDENT = student;
+        localStorage.setItem(SESSION_KEY, email);
+        showDashboard(student);
+        event.target.reset();
+    } catch (e) {
+        alert(friendlyError(e));
     }
-    if (user.role === 'admin') {
-        alert('Esta es una cuenta de administración. Usa el acceso de personal en el pie de página.');
-        return;
-    }
-
-    setSession(email);
-    showDashboard(user);
-    event.target.reset();
 }
 
-function handleRegister(event) {
+async function handleRegister(event) {
     event.preventDefault();
     const name = document.getElementById('reg-name').value.trim();
     const email = document.getElementById('reg-email').value.trim().toLowerCase();
@@ -243,33 +139,23 @@ function handleRegister(event) {
     const phone = document.getElementById('reg-phone').value.trim();
     const birthday = document.getElementById('reg-birthday').value;
 
-    const users = getUsers();
-    if (users[email]) {
-        alert('Ya existe una cuenta con ese correo. Intenta iniciar sesión.');
-        return;
+    try {
+        const student = await callRPC('register_student', {
+            p_name: name, p_email: email, p_password: password, p_phone: phone, p_birthday: birthday
+        });
+        CURRENT_STUDENT = student;
+        localStorage.setItem(SESSION_KEY, email);
+        showDashboard(student);
+        event.target.reset();
+        alert('¡Cuenta creada! Antes de tomar tu primera clase, completa tu ficha médica y firma el reglamento desde tu panel. Recuerda que la afiliación anual tiene un costo de $550 MXN, puedes pagarla en el estudio o por transferencia.');
+    } catch (e) {
+        alert(friendlyError(e));
     }
-
-    users[email] = {
-        name, email, password, phone, birthday,
-        role: 'student',
-        credits: 0,
-        membershipPaid: false,
-        membershipStatus: 'pendiente',
-        membershipNote: '',
-        reglamentoSigned: false,
-        medicalSigned: false,
-        medicalForm: null,
-        createdAt: new Date().toISOString()
-    };
-    saveUsers(users);
-    setSession(email);
-    showDashboard(users[email]);
-    event.target.reset();
-    alert('¡Cuenta creada! Antes de tomar tu primera clase, completa tu ficha médica y firma el reglamento desde tu panel. Recuerda que la afiliación anual tiene un costo de $550 MXN, puedes pagarla en el estudio o por transferencia.');
 }
 
 function handleLogout() {
-    setSession(null);
+    CURRENT_STUDENT = null;
+    localStorage.removeItem(SESSION_KEY);
     document.getElementById('student-dashboard').classList.add('hidden');
     document.getElementById('auth-container').classList.remove('hidden');
     document.getElementById('login-form').reset();
@@ -277,14 +163,14 @@ function handleLogout() {
 
 /* ------------------------------ Dashboard ------------------------------ */
 
-function currentUserEmail() {
-    return getSession();
+function currentUser() {
+    return CURRENT_STUDENT;
 }
 
-function currentUser() {
-    const email = currentUserEmail();
-    if (!email) return null;
-    return getUsers()[email] || null;
+async function refreshCurrentStudent() {
+    if (!CURRENT_STUDENT) return;
+    const student = await callRPC('get_student', { p_email: CURRENT_STUDENT.email });
+    CURRENT_STUDENT = student;
 }
 
 function showDashboard(user) {
@@ -294,42 +180,45 @@ function showDashboard(user) {
     renderDashboard();
 }
 
-function renderDashboard() {
+async function renderDashboard() {
     const user = currentUser();
     if (!user) return;
 
     document.getElementById('credit-count').textContent = user.credits >= 999 ? '∞' : user.credits;
 
-    // Estado de trámites
     const medBtn = document.getElementById('medical-status-btn');
-    medBtn.textContent = user.medicalSigned ? 'Ver / Actualizar ficha' : 'Completar ficha médica';
-    medBtn.classList.toggle('btn-secondary', true);
-    document.getElementById('medical-status-badge').textContent = user.medicalSigned ? 'Completa ✓' : 'Pendiente';
-    document.getElementById('medical-status-badge').className = 'status-badge ' + (user.medicalSigned ? 'status-ok' : 'status-pending');
+    if (medBtn) medBtn.textContent = user.medical_signed ? 'Ver / Actualizar ficha' : 'Completar ficha médica';
+    document.getElementById('medical-status-badge').textContent = user.medical_signed ? 'Completa ✓' : 'Pendiente';
+    document.getElementById('medical-status-badge').className = 'status-badge ' + (user.medical_signed ? 'status-ok' : 'status-pending');
 
-    document.getElementById('reglamento-status-badge').textContent = user.reglamentoSigned ? 'Firmado ✓' : 'Pendiente';
-    document.getElementById('reglamento-status-badge').className = 'status-badge ' + (user.reglamentoSigned ? 'status-ok' : 'status-pending');
+    document.getElementById('reglamento-status-badge').textContent = user.reglamento_signed ? 'Firmado ✓' : 'Pendiente';
+    document.getElementById('reglamento-status-badge').className = 'status-badge ' + (user.reglamento_signed ? 'status-ok' : 'status-pending');
 
     const membershipStatus = getMembershipStatus(user);
     const membershipLabels = { pagada: 'Pagada ✓', exenta: 'Exenta / promoción ✓', pendiente: 'Pendiente' };
     document.getElementById('membership-status-badge').textContent = membershipLabels[membershipStatus];
     document.getElementById('membership-status-badge').className = 'status-badge ' + (membershipStatus === 'pendiente' ? 'status-pending' : 'status-ok');
-    document.getElementById('membership-status-note').textContent = user.membershipNote ? `(${user.membershipNote})` : '';
+    document.getElementById('membership-status-note').textContent = user.membership_note ? `(${user.membership_note})` : '';
 
     // Reservas
-    const reservations = getReservations().filter(r => r.userEmail === user.email && r.status !== 'cancelada');
     const list = document.getElementById('reservations-list');
-    list.innerHTML = '';
-    if (reservations.length === 0) {
-        list.innerHTML = '<li class="empty-state">No tienes clases agendadas todavía.</li>';
-    } else {
-        reservations.forEach(res => {
-            const li = document.createElement('li');
-            li.className = 'reservation-item';
-            li.innerHTML = `<span><strong>${res.discipline}</strong> — ${res.day} ${res.time}</span>
-                <button onclick="cancelBooking('${res.id}')" class="btn-secondary sm">Cancelar</button>`;
-            list.appendChild(li);
-        });
+    list.innerHTML = '<li class="empty-state">Cargando...</li>';
+    try {
+        const reservations = await callRPC('get_my_reservations', { p_email: user.email });
+        list.innerHTML = '';
+        if (!reservations || reservations.length === 0) {
+            list.innerHTML = '<li class="empty-state">No tienes clases agendadas todavía.</li>';
+        } else {
+            reservations.forEach(res => {
+                const li = document.createElement('li');
+                li.className = 'reservation-item';
+                li.innerHTML = `<span><strong>${res.discipline}</strong> — ${res.day} ${res.time}</span>
+                    <button onclick="cancelBooking('${res.id}')" class="btn-secondary sm">Cancelar</button>`;
+                list.appendChild(li);
+            });
+        }
+    } catch (e) {
+        list.innerHTML = '<li class="empty-state">No se pudieron cargar tus reservas.</li>';
     }
 }
 
@@ -338,7 +227,7 @@ function renderDashboard() {
 function openBookingModal() {
     const user = currentUser();
     if (!user) return;
-    if (!user.reglamentoSigned || !user.medicalSigned) {
+    if (!user.reglamento_signed || !user.medical_signed) {
         alert('Antes de agendar necesitas completar tu ficha médica y firmar el reglamento interno. Puedes hacerlo desde tu panel.');
         return;
     }
@@ -351,58 +240,41 @@ function openBookingModal() {
 }
 function closeBookingModal() { document.getElementById('booking-modal').classList.add('hidden'); }
 
-function handleBooking(event) {
+async function handleBooking(event) {
     event.preventDefault();
     const user = currentUser();
-    if (!user || user.credits <= 0) {
-        alert('No tienes créditos disponibles.');
-        return;
-    }
+    if (!user) return;
 
     const scheduleId = document.getElementById('book-slot').value;
     if (!scheduleId) { alert('Elige un horario.'); return; }
     const [day, time, discipline] = scheduleId.split('|');
 
-    const reservations = getReservations();
-    reservations.push({
-        id: uid(),
-        userEmail: user.email,
-        guestName: null,
-        discipline, day, time,
-        status: 'confirmada',
-        paymentMethod: 'créditos',
-        createdAt: new Date().toISOString()
-    });
-    saveReservations(reservations);
-
-    const users = getUsers();
-    users[user.email].credits -= 1;
-    saveUsers(users);
-
-    closeBookingModal();
-    renderDashboard();
-    alert('¡Clase reservada con éxito!');
+    try {
+        await callRPC('create_reservation', {
+            p_email: user.email, p_guest_name: null, p_guest_phone: null, p_guest_email: null,
+            p_discipline: discipline, p_day: day, p_time: time, p_is_guest: false,
+            p_package_id: null, p_payment_method: null
+        });
+        await refreshCurrentStudent();
+        closeBookingModal();
+        renderDashboard();
+        alert('¡Clase reservada con éxito!');
+    } catch (e) {
+        alert(friendlyError(e));
+    }
 }
 
-function cancelBooking(id) {
+async function cancelBooking(id) {
     const user = currentUser();
     if (!user) return;
-    const reservations = getReservations();
-    const res = reservations.find(r => r.id === id);
-    if (!res) return;
-
-    res.status = 'cancelada';
-    saveReservations(reservations);
-
-    if (res.userEmail) {
-        const users = getUsers();
-        if (users[res.userEmail] && users[res.userEmail].credits < 999) {
-            users[res.userEmail].credits += 1;
-            saveUsers(users);
-        }
+    try {
+        await callRPC('cancel_reservation', { p_id: id, p_email: user.email });
+        await refreshCurrentStudent();
+        renderDashboard();
+        alert('Clase cancelada. Tu crédito ha sido restituido.');
+    } catch (e) {
+        alert(friendlyError(e));
     }
-    renderDashboard();
-    alert('Clase cancelada. Tu crédito ha sido restituido.');
 }
 
 /* ------------------------------ Ficha médica ------------------------------ */
@@ -419,8 +291,8 @@ function openMedicalForm() {
     form.reset();
     document.getElementById('minor-fields').classList.add('hidden');
 
-    if (user.medicalForm) {
-        const m = user.medicalForm;
+    if (user.medical_form) {
+        const m = user.medical_form;
         form.elements['med-name'].value = m.nombre || user.name;
         form.elements['med-birthday'].value = m.fechaNacimiento || '';
         form.elements['med-age'].value = m.edad || '';
@@ -465,7 +337,7 @@ function openMedicalForm() {
 }
 function closeMedicalForm() { document.getElementById('medical-modal').classList.add('hidden'); }
 
-function saveMedicalForm(event) {
+async function saveMedicalForm(event) {
     event.preventDefault();
     const user = currentUser();
     if (!user) return;
@@ -476,8 +348,7 @@ function saveMedicalForm(event) {
         .filter(c => c.checked)
         .map(c => c.value);
 
-    const users = getUsers();
-    users[user.email].medicalForm = {
+    const medicalForm = {
         nombre: form.elements['med-name'].value,
         fechaNacimiento: form.elements['med-birthday'].value,
         edad: form.elements['med-age'].value,
@@ -510,12 +381,16 @@ function saveMedicalForm(event) {
         firma: form.elements['med-signature'].value,
         firmadoEl: new Date().toISOString()
     };
-    users[user.email].medicalSigned = true;
-    saveUsers(users);
 
-    closeMedicalForm();
-    renderDashboard();
-    alert('¡Ficha médica guardada correctamente en tu expediente!');
+    try {
+        await callRPC('save_medical_form', { p_email: user.email, p_form: medicalForm });
+        await refreshCurrentStudent();
+        closeMedicalForm();
+        renderDashboard();
+        alert('¡Ficha médica guardada correctamente en tu expediente!');
+    } catch (e) {
+        alert(friendlyError(e));
+    }
 }
 
 /* ------------------------------ Reglamento ------------------------------ */
@@ -525,25 +400,27 @@ function openReglamentoModal() {
 }
 function closeReglamentoModal() { document.getElementById('reglamento-modal').classList.add('hidden'); }
 
-function acceptReglamento() {
+async function acceptReglamento() {
     const user = currentUser();
     if (!user) { closeReglamentoModal(); return; }
-    const users = getUsers();
-    users[user.email].reglamentoSigned = true;
-    saveUsers(users);
-    closeReglamentoModal();
-    renderDashboard();
-    alert('Has aceptado el reglamento interno.');
+    try {
+        await callRPC('accept_reglamento', { p_email: user.email });
+        await refreshCurrentStudent();
+        closeReglamentoModal();
+        renderDashboard();
+        alert('Has aceptado el reglamento interno.');
+    } catch (e) {
+        alert(friendlyError(e));
+    }
 }
 
 /* ------------------------------ Compra de paquetes ------------------------------ */
 
 function populatePackageOptions() {
-    const packages = getPackages();
     const select = document.getElementById('checkout-package');
     if (!select) return;
-    const pole = packages.filter(p => p.categoria !== 'ritmos');
-    const ritmos = packages.filter(p => p.categoria === 'ritmos');
+    const pole = PACKAGES.filter(p => p.categoria !== 'ritmos');
+    const ritmos = PACKAGES.filter(p => p.categoria === 'ritmos');
     select.innerHTML =
         `<optgroup label="Pole y Disciplinas">` +
         pole.map(p => `<option value="${p.id}">${p.nombre} — ${money(p.precio)}</option>`).join('') +
@@ -559,44 +436,30 @@ function openCheckoutModal() {
 }
 function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
 
-function handleCheckout(event) {
+async function handleCheckout(event) {
     event.preventDefault();
     const user = currentUser();
     if (!user) return;
 
     const packageId = document.getElementById('checkout-package').value;
     const paymentMethod = document.getElementById('checkout-payment').value;
-    const pkg = getPackages().find(p => p.id === packageId);
+    const pkg = PACKAGES.find(p => p.id === packageId);
     if (!pkg) return;
 
-    if (paymentMethod === 'efectivo' || paymentMethod === 'tarjeta') {
-        // Se paga físicamente en el estudio. Queda pendiente de confirmación
-        // por parte del staff en el panel de administración.
-        registerPendingPurchase(user.email, pkg, paymentMethod);
+    try {
+        await callRPC('request_purchase', {
+            p_email: user.email, p_guest_name: null, p_guest_phone: null,
+            p_package_id: packageId, p_payment_method: paymentMethod, p_is_guest: false
+        });
         closeCheckoutModal();
-        alert(`Elegiste pagar ${pkg.nombre} (${money(pkg.precio)}) en el estudio con ${paymentMethod}. Tus créditos se activarán cuando el staff confirme tu pago en recepción.`);
-    } else {
-        registerPendingPurchase(user.email, pkg, 'transferencia');
-        closeCheckoutModal();
-        alert(`Elegiste pagar por transferencia. Escríbenos por WhatsApp (222 469 4805) para enviarte los datos bancarios y comparte tu comprobante. Tus créditos se activarán cuando confirmemos el pago.`);
+        if (paymentMethod === 'transferencia') {
+            alert('Elegiste pagar por transferencia. Escríbenos por WhatsApp (222 469 4805) para enviarte los datos bancarios y comparte tu comprobante. Tus créditos se activarán cuando confirmemos el pago.');
+        } else {
+            alert(`Elegiste pagar ${pkg.nombre} (${money(pkg.precio)}) en el estudio con ${paymentMethod}. Tus créditos se activarán cuando el staff confirme tu pago en recepción.`);
+        }
+    } catch (e) {
+        alert(friendlyError(e));
     }
-}
-
-function registerPendingPurchase(userEmail, pkg, paymentMethod) {
-    const reservations = getReservations(); // reutilizamos el mismo storage de "movimientos" via una lista separada
-    const purchases = loadJSON('moeva_purchases', []);
-    purchases.push({
-        id: uid(),
-        userEmail,
-        packageId: pkg.id,
-        packageName: pkg.nombre,
-        precio: pkg.precio,
-        creditos: pkg.creditos,
-        paymentMethod,
-        status: 'pendiente',
-        createdAt: new Date().toISOString()
-    });
-    saveJSON('moeva_purchases', purchases);
 }
 
 /* ------------------------------ Reserva sin cuenta (invitada) ------------------------------ */
@@ -610,13 +473,13 @@ function closeGuestModal() { document.getElementById('guest-modal').classList.ad
 function populateGuestPackageOptions() {
     const select = document.getElementById('guest-package');
     if (!select) return;
-    const packages = getPackages().filter(p => p.id === 'muestra' || p.id === 'suelta');
+    const packages = PACKAGES.filter(p => p.id === 'muestra' || p.id === 'suelta');
     select.innerHTML = packages.map(p =>
         `<option value="${p.id}">${p.nombre} — ${money(p.precio)}</option>`
     ).join('');
 }
 
-function handleGuestBooking(event) {
+async function handleGuestBooking(event) {
     event.preventDefault();
     const name = document.getElementById('guest-name').value.trim();
     const phone = document.getElementById('guest-phone').value.trim();
@@ -627,41 +490,30 @@ function handleGuestBooking(event) {
 
     if (!scheduleId) { alert('Elige un horario.'); return; }
     const [day, time, discipline] = scheduleId.split('|');
-    const pkg = getPackages().find(p => p.id === packageId);
+    const pkg = PACKAGES.find(p => p.id === packageId);
 
-    const reservations = getReservations();
-    reservations.push({
-        id: uid(),
-        userEmail: null,
-        guestName: name,
-        guestPhone: phone,
-        guestEmail: email,
-        discipline, day, time,
-        packageName: pkg.nombre,
-        precio: pkg.precio,
-        status: paymentMethod === 'transferencia' ? 'pendiente de pago' : 'confirmada (paga en estudio)',
-        paymentMethod,
-        createdAt: new Date().toISOString()
-    });
-    saveReservations(reservations);
-
-    closeGuestModal();
-    event.target.reset();
-
-    if (paymentMethod === 'transferencia') {
-        alert('¡Reserva registrada! Escríbenos por WhatsApp (222 469 4805) para los datos de transferencia y envíanos tu comprobante para confirmar tu lugar.');
-    } else {
-        alert(`¡Reserva registrada! Paga tu ${pkg.nombre} (${money(pkg.precio)}) con ${paymentMethod} directamente al llegar al estudio.`);
+    try {
+        await callRPC('create_reservation', {
+            p_email: null, p_guest_name: name, p_guest_phone: phone, p_guest_email: email || null,
+            p_discipline: discipline, p_day: day, p_time: time, p_is_guest: true,
+            p_package_id: packageId, p_payment_method: paymentMethod
+        });
+        closeGuestModal();
+        event.target.reset();
+        if (paymentMethod === 'transferencia') {
+            alert('¡Reserva registrada! Escríbenos por WhatsApp (222 469 4805) para los datos de transferencia y envíanos tu comprobante para confirmar tu lugar.');
+        } else {
+            alert(`¡Reserva registrada! Paga tu ${pkg.nombre} (${money(pkg.precio)}) con ${paymentMethod} directamente al llegar al estudio.`);
+        }
+    } catch (e) {
+        alert(friendlyError(e));
     }
 }
 
 /* ------------------------------ Horario público (dinámico) ------------------------------ */
 
-const DAYS_ORDER = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-
 function renderScheduleTable() {
-    const schedule = getSchedule();
-    const mainSchedule = schedule.filter(s => s.discipline !== 'Ritmos Latinos');
+    const mainSchedule = SCHEDULE.filter(s => s.discipline !== 'Ritmos Latinos');
     const times = [...new Set(mainSchedule.map(s => s.time))].sort((a, b) => timeToMinutes(a) - timeToMinutes(b));
     const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
@@ -680,8 +532,7 @@ function renderScheduleTable() {
         tbody.appendChild(tr);
     });
 
-    // Ritmos latinos
-    const ritmos = schedule.filter(s => s.discipline === 'Ritmos Latinos');
+    const ritmos = SCHEDULE.filter(s => s.discipline === 'Ritmos Latinos');
     const ritmosBox = document.getElementById('ritmos-schedule');
     if (ritmosBox) {
         ritmosBox.innerHTML = ritmos.map(r => `
@@ -702,8 +553,7 @@ function timeToMinutes(t) {
 }
 
 function populateScheduleSelects() {
-    const schedule = getSchedule();
-    const options = schedule.map(s =>
+    const options = SCHEDULE.map(s =>
         `<option value="${s.day}|${s.time}|${s.discipline}">${s.day} ${s.time} — ${s.discipline}</option>`
     ).join('');
 
@@ -715,10 +565,9 @@ function populateScheduleSelects() {
 }
 
 function populateDisciplineSelects() {
-    const disciplines = getDisciplines();
     const select = document.getElementById('admin-schedule-discipline');
     if (select) {
-        select.innerHTML = disciplines.map(d => `<option value="${d}">${d}</option>`).join('');
+        select.innerHTML = DISCIPLINES.map(d => `<option value="${d}">${d}</option>`).join('');
     }
 }
 
@@ -726,30 +575,41 @@ function populateDisciplineSelects() {
    PANEL DE ADMINISTRACIÓN (staff)
    ========================================================================== */
 
+function getAdminToken() {
+    return sessionStorage.getItem(ADMIN_TOKEN_KEY);
+}
+
 function openAdminLogin() {
     document.getElementById('admin-login-modal').classList.remove('hidden');
 }
 function closeAdminLogin() { document.getElementById('admin-login-modal').classList.add('hidden'); }
 
-function handleAdminLogin(event) {
+async function handleAdminLogin(event) {
     event.preventDefault();
     const email = document.getElementById('admin-email').value.trim().toLowerCase();
     const password = document.getElementById('admin-password').value;
 
-    const users = getUsers();
-    const user = users[email];
-    if (!user || user.role !== 'admin' || user.password !== password) {
+    try {
+        const token = await callRPC('admin_login', { p_email: email, p_password: password });
+        if (!token) {
+            alert('Credenciales de administración incorrectas.');
+            return;
+        }
+        sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
+        closeAdminLogin();
+        showAdminPanel();
+        event.target.reset();
+    } catch (e) {
         alert('Credenciales de administración incorrectas.');
-        return;
     }
-    setAdminSession(true);
-    closeAdminLogin();
-    showAdminPanel();
-    event.target.reset();
 }
 
-function handleAdminLogout() {
-    setAdminSession(false);
+async function handleAdminLogout() {
+    const token = getAdminToken();
+    if (token) {
+        try { await callRPC('admin_logout', { p_token: token }); } catch (e) { /* no-op */ }
+    }
+    sessionStorage.removeItem(ADMIN_TOKEN_KEY);
     document.getElementById('admin-panel').classList.add('hidden');
 }
 
@@ -772,152 +632,162 @@ function switchAdminTab(tab) {
 
 /* --- Reservas (admin) --- */
 
-function renderAdminReservations() {
+async function renderAdminReservations() {
     const container = document.getElementById('admin-reservations-list');
     if (!container) return;
-    const reservations = getReservations().slice().reverse();
+    const token = getAdminToken();
+    if (!token) return;
 
-    if (reservations.length === 0) {
-        container.innerHTML = '<p class="empty-state">No hay reservas registradas.</p>';
-        return;
+    container.innerHTML = '<p class="empty-state">Cargando...</p>';
+    try {
+        const reservations = await callRPC('admin_list_reservations', { p_token: token });
+
+        if (!reservations || reservations.length === 0) {
+            container.innerHTML = '<p class="empty-state">No hay reservas registradas.</p>';
+            return;
+        }
+
+        container.innerHTML = reservations.map(r => {
+            const who = r.is_guest ? `${r.guest_name} (invitada — ${r.guest_phone || 's/tel'})` : (r.student_email || 's/correo');
+            return `
+            <div class="admin-row">
+                <div>
+                    <strong>${who}</strong><br>
+                    <span>${r.discipline} — ${r.day} ${r.time}</span><br>
+                    <span class="status-badge status-ok">${r.status}</span>
+                    ${r.payment_method ? `<span class="muted"> · pago: ${r.payment_method}</span>` : ''}
+                </div>
+                <div class="admin-row-actions">
+                    <button class="btn-secondary sm" onclick="adminCancelReservation('${r.id}')">Cancelar</button>
+                </div>
+            </div>`;
+        }).join('');
+    } catch (e) {
+        container.innerHTML = `<p class="empty-state">${friendlyError(e)}</p>`;
     }
-
-    container.innerHTML = reservations.map(r => {
-        const who = r.userEmail ? (getUsers()[r.userEmail]?.name || r.userEmail) : `${r.guestName} (invitada — ${r.guestPhone || 's/tel'})`;
-        return `
-        <div class="admin-row">
-            <div>
-                <strong>${who}</strong><br>
-                <span>${r.discipline} — ${r.day} ${r.time}</span><br>
-                <span class="status-badge ${r.status === 'cancelada' ? 'status-pending' : 'status-ok'}">${r.status}</span>
-                <span class="muted"> · pago: ${r.paymentMethod}</span>
-            </div>
-            <div class="admin-row-actions">
-                ${r.status !== 'cancelada' ? `<button class="btn-secondary sm" onclick="adminCancelReservation('${r.id}')">Cancelar</button>` : ''}
-            </div>
-        </div>`;
-    }).join('');
 }
 
-function adminCancelReservation(id) {
-    const reservations = getReservations();
-    const res = reservations.find(r => r.id === id);
-    if (!res) return;
-    res.status = 'cancelada';
-    saveReservations(reservations);
-    if (res.userEmail) {
-        const users = getUsers();
-        if (users[res.userEmail] && users[res.userEmail].credits < 999) {
-            users[res.userEmail].credits += 1;
-            saveUsers(users);
-        }
+async function adminCancelReservation(id) {
+    const token = getAdminToken();
+    if (!token) return;
+    try {
+        await callRPC('admin_cancel_reservation', { p_token: token, p_id: id });
+        renderAdminReservations();
+        renderAdminStudents();
+    } catch (e) {
+        alert(friendlyError(e));
     }
-    renderAdminReservations();
-    renderAdminStudents();
 }
 
 /* --- Compras pendientes de confirmación (admin) --- */
 
-function renderAdminPurchases() {
+async function renderAdminPurchases() {
     const container = document.getElementById('admin-purchases-list');
     if (!container) return;
-    const purchases = loadJSON('moeva_purchases', []).slice().reverse();
-    const pending = purchases.filter(p => p.status === 'pendiente');
+    const token = getAdminToken();
+    if (!token) return;
 
-    if (pending.length === 0) {
-        container.innerHTML = '<p class="empty-state">No hay pagos pendientes de confirmar.</p>';
-        return;
+    container.innerHTML = '<p class="empty-state">Cargando...</p>';
+    try {
+        const purchases = await callRPC('admin_list_purchases', { p_token: token });
+        const pending = (purchases || []).filter(p => p.status === 'pendiente');
+
+        if (pending.length === 0) {
+            container.innerHTML = '<p class="empty-state">No hay pagos pendientes de confirmar.</p>';
+            return;
+        }
+
+        container.innerHTML = pending.map(p => `
+            <div class="admin-row">
+                <div>
+                    <strong>${p.is_guest ? p.guest_name + ' (invitada)' : p.student_email}</strong><br>
+                    <span>${p.package_name} — ${money(p.price)} (${p.credits >= 999 ? '∞' : p.credits} créditos)</span><br>
+                    <span class="muted">pago: ${p.payment_method}</span>
+                </div>
+                <div class="admin-row-actions">
+                    <button class="btn-primary sm" onclick="confirmPurchase('${p.id}')">Confirmar pago</button>
+                </div>
+            </div>`
+        ).join('');
+    } catch (e) {
+        container.innerHTML = `<p class="empty-state">${friendlyError(e)}</p>`;
     }
-
-    container.innerHTML = pending.map(p => {
-        const user = getUsers()[p.userEmail];
-        return `
-        <div class="admin-row">
-            <div>
-                <strong>${user ? user.name : p.userEmail}</strong><br>
-                <span>${p.packageName} — ${money(p.precio)} (${p.creditos >= 999 ? '∞' : p.creditos} créditos)</span><br>
-                <span class="muted">pago: ${p.paymentMethod}</span>
-            </div>
-            <div class="admin-row-actions">
-                <button class="btn-primary sm" onclick="confirmPurchase('${p.id}')">Confirmar pago</button>
-            </div>
-        </div>`;
-    }).join('');
 }
 
-function confirmPurchase(id) {
-    const purchases = loadJSON('moeva_purchases', []);
-    const purchase = purchases.find(p => p.id === id);
-    if (!purchase) return;
-    purchase.status = 'confirmado';
-    saveJSON('moeva_purchases', purchases);
-
-    const users = getUsers();
-    const user = users[purchase.userEmail];
-    if (user) {
-        user.credits = user.credits >= 999 ? user.credits : user.credits + purchase.creditos;
-        if (purchase.creditos >= 999) user.credits = 999;
-        saveUsers(users);
+async function confirmPurchase(id) {
+    const token = getAdminToken();
+    if (!token) return;
+    try {
+        await callRPC('admin_confirm_purchase', { p_token: token, p_id: id });
+        renderAdminPurchases();
+        renderAdminStudents();
+        if (currentUser()) { await refreshCurrentStudent(); renderDashboard(); }
+        alert('Pago confirmado y créditos aplicados a la cuenta de la alumna.');
+    } catch (e) {
+        alert(friendlyError(e));
     }
-    renderAdminPurchases();
-    renderAdminStudents();
-    if (currentUser()) renderDashboard();
-    alert('Pago confirmado y créditos aplicados a la cuenta de la alumna.');
 }
 
 /* --- Alumnas (admin) --- */
 
-function renderAdminStudents() {
+async function renderAdminStudents() {
     const container = document.getElementById('admin-students-list');
     if (!container) return;
-    const users = getUsers();
-    const students = Object.values(users).filter(u => u.role !== 'admin');
+    const token = getAdminToken();
+    if (!token) return;
 
-    if (students.length === 0) {
-        container.innerHTML = '<p class="empty-state">Aún no hay alumnas registradas.</p>';
-        return;
+    container.innerHTML = '<p class="empty-state">Cargando...</p>';
+    try {
+        const students = await callRPC('admin_list_students', { p_token: token });
+
+        if (!students || students.length === 0) {
+            container.innerHTML = '<p class="empty-state">Todavía no hay alumnas registradas.</p>';
+            return;
+        }
+
+        container.innerHTML = students.map(s => {
+            const membershipStatus = getMembershipStatus(s);
+            const membershipLabels = { pagada: 'Afiliación: Pagada', exenta: 'Afiliación: Exenta/promoción', pendiente: 'Afiliación: Pendiente' };
+            return `
+            <div class="admin-row admin-row-student">
+                <div>
+                    <strong>${s.name}</strong><br>
+                    <span class="muted">${s.email} · ${s.phone || 'sin teléfono'} · ${s.birthday ? 'cumpleaños: ' + s.birthday : 'sin fecha de nacimiento'}</span><br>
+                    <span class="status-badge ${s.medical_signed ? 'status-ok' : 'status-pending'}">Ficha médica: ${s.medical_signed ? 'Completa' : 'Pendiente'}</span>
+                    <span class="status-badge ${s.reglamento_signed ? 'status-ok' : 'status-pending'}">Reglamento: ${s.reglamento_signed ? 'Firmado' : 'Pendiente'}</span>
+                    <span class="status-badge ${membershipStatus === 'pendiente' ? 'status-pending' : 'status-ok'}">${membershipLabels[membershipStatus]}${s.membership_note ? ' — ' + s.membership_note : ''}</span>
+                    <span class="muted">· Créditos: ${s.credits >= 999 ? '∞' : s.credits}</span>
+                </div>
+                <div class="admin-row-actions">
+                    <button class="btn-secondary sm" onclick="viewMedicalFile('${s.email}')">Ver ficha médica</button>
+                    <button class="btn-secondary sm" onclick="adjustCredits('${s.email}', ${s.credits})">Ajustar créditos</button>
+                    <button class="btn-secondary sm" onclick="setMembershipStatus('${s.email}', '${membershipStatus}', '${(s.membership_note || '').replace(/'/g, "\\'")}')">Afiliación</button>
+                    <button class="btn-secondary sm btn-danger" onclick="deleteStudent('${s.email}', '${s.name.replace(/'/g, "\\'")}')">Borrar alumna</button>
+                </div>
+            </div>`;
+        }).join('');
+    } catch (e) {
+        container.innerHTML = `<p class="empty-state">${friendlyError(e)}</p>`;
     }
-
-    container.innerHTML = students.map(s => {
-        const membershipStatus = getMembershipStatus(s);
-        const membershipLabels = { pagada: 'Afiliación: Pagada', exenta: 'Afiliación: Exenta/promoción', pendiente: 'Afiliación: Pendiente' };
-        return `
-        <div class="admin-row admin-row-student">
-            <div>
-                <strong>${s.name}</strong><br>
-                <span class="muted">${s.email} · ${s.phone || 'sin teléfono'} · ${s.birthday ? 'cumpleaños: ' + s.birthday : 'sin fecha de nacimiento'}</span><br>
-                <span class="status-badge ${s.medicalSigned ? 'status-ok' : 'status-pending'}">Ficha médica: ${s.medicalSigned ? 'Completa' : 'Pendiente'}</span>
-                <span class="status-badge ${s.reglamentoSigned ? 'status-ok' : 'status-pending'}">Reglamento: ${s.reglamentoSigned ? 'Firmado' : 'Pendiente'}</span>
-                <span class="status-badge ${membershipStatus === 'pendiente' ? 'status-pending' : 'status-ok'}">${membershipLabels[membershipStatus]}${s.membershipNote ? ' — ' + s.membershipNote : ''}</span>
-                <span class="muted">· Créditos: ${s.credits >= 999 ? '∞' : s.credits}</span>
-            </div>
-            <div class="admin-row-actions">
-                <button class="btn-secondary sm" onclick="viewMedicalFile('${s.email}')">Ver ficha médica</button>
-                <button class="btn-secondary sm" onclick="adjustCredits('${s.email}')">Ajustar créditos</button>
-                <button class="btn-secondary sm" onclick="setMembershipStatus('${s.email}')">Afiliación</button>
-                <button class="btn-secondary sm btn-danger" onclick="deleteStudent('${s.email}')">Borrar alumna</button>
-            </div>
-        </div>`;
-    }).join('');
 }
 
-function setMembershipStatus(email) {
-    const users = getUsers();
-    const user = users[email];
-    if (!user) return;
+async function setMembershipStatus(email, currentStatus, currentNote) {
+    const token = getAdminToken();
+    if (!token) return;
 
     const opciones = '1 = Pendiente\n2 = Pagada\n3 = Exenta / promoción (cortesía, descuento, etc.)';
-    const choice = prompt(`Afiliación de ${user.name}:\n${opciones}\n\nEscribe 1, 2 o 3:`, '2');
+    const map = { pendiente: '1', pagada: '2', exenta: '3' };
+    const choice = prompt(`Afiliación de ${email}:\n${opciones}\n\nEscribe 1, 2 o 3:`, map[currentStatus] || '1');
     if (choice === null) return;
 
-    const map = { '1': 'pendiente', '2': 'pagada', '3': 'exenta' };
-    const nuevoEstatus = map[choice.trim()];
+    const reverseMap = { '1': 'pendiente', '2': 'pagada', '3': 'exenta' };
+    const nuevoEstatus = reverseMap[choice.trim()];
     if (!nuevoEstatus) {
         alert('Opción no válida. Escribe 1, 2 o 3.');
         return;
     }
 
-    let nota = user.membershipNote || '';
+    let nota = currentNote || '';
     if (nuevoEstatus === 'exenta' || nuevoEstatus === 'pagada') {
         const notaInput = prompt('Nota opcional (ej. "Promoción verano 2026", "50% descuento", "Cortesía"):', nota);
         if (notaInput !== null) nota = notaInput.trim();
@@ -925,93 +795,93 @@ function setMembershipStatus(email) {
         nota = '';
     }
 
-    user.membershipStatus = nuevoEstatus;
-    user.membershipPaid = nuevoEstatus !== 'pendiente';
-    user.membershipNote = nota;
-    saveUsers(users);
-    renderAdminStudents();
-    if (currentUser() && currentUser().email === email) renderDashboard();
-    alert('Estatus de afiliación actualizado.');
+    try {
+        await callRPC('admin_set_membership', { p_token: token, p_student_email: email, p_status: nuevoEstatus, p_note: nota });
+        renderAdminStudents();
+        if (currentUser() && currentUser().email === email) { await refreshCurrentStudent(); renderDashboard(); }
+        alert('Estatus de afiliación actualizado.');
+    } catch (e) {
+        alert(friendlyError(e));
+    }
 }
 
-function deleteStudent(email) {
-    const users = getUsers();
-    const user = users[email];
-    if (!user) return;
-
-    const confirmado = confirm(`¿Seguro que quieres borrar a "${user.name}" (${email})?\n\nEsto elimina su cuenta, ficha médica, créditos y reservas. Esta acción no se puede deshacer.`);
+async function deleteStudent(email, name) {
+    const confirmado = confirm(`¿Seguro que quieres borrar a "${name}" (${email})?\n\nEsto elimina su cuenta, ficha médica, créditos y reservas. Esta acción no se puede deshacer.`);
     if (!confirmado) return;
 
-    // Borra la alumna
-    delete users[email];
-    saveUsers(users);
-
-    // Borra sus reservas
-    const reservations = getReservations().filter(r => r.userEmail !== email);
-    saveReservations(reservations);
-
-    // Borra sus compras/pagos pendientes o confirmados
-    const purchases = loadJSON('moeva_purchases', []).filter(p => p.userEmail !== email);
-    saveJSON('moeva_purchases', purchases);
-
-    renderAdminStudents();
-    renderAdminPurchases();
-    renderAdminReservations();
-    alert('Alumna eliminada correctamente.');
-}
-
-function viewMedicalFile(email) {
-    const user = getUsers()[email];
-    if (!user) return;
-    if (!user.medicalForm) {
-        alert('Esta alumna todavía no ha llenado su ficha médica.');
-        return;
+    const token = getAdminToken();
+    if (!token) return;
+    try {
+        await callRPC('admin_delete_student', { p_token: token, p_student_email: email });
+        renderAdminStudents();
+        renderAdminPurchases();
+        renderAdminReservations();
+        alert('Alumna eliminada correctamente.');
+    } catch (e) {
+        alert(friendlyError(e));
     }
-    const f = user.medicalForm;
-    const condiciones = (f.condiciones && f.condiciones.length) ? f.condiciones.join(', ') : 'Ninguna reportada';
-    alert(
-        `CARTA RESPONSIVA Y REGISTRO DE SALUD — ${user.name}\n\n` +
-        `--- Datos personales ---\n` +
-        `Fecha de nacimiento: ${f.fechaNacimiento || '-'}   Edad: ${f.edad || '-'}\n` +
-        `Teléfono: ${f.telefono || '-'}\n` +
-        `Correo: ${f.correo || '-'}\n` +
-        `Domicilio: ${f.domicilio || '-'}\n\n` +
-        `--- Contacto de emergencia ---\n` +
-        `${f.contactoEmergenciaNombre || '-'} (${f.contactoEmergenciaParentesco || '-'})\n` +
-        `Tel: ${f.contactoEmergenciaTelefono || '-'}  Alt: ${f.contactoEmergenciaTelefonoAlt || '-'}\n\n` +
-        `--- Antecedentes de salud ---\n` +
-        `Lesión actual: ${f.lesionActual || 'No reporta'}\n` +
-        `Lesiones anteriores: ${f.lesionesAnteriores || 'No reporta'}\n` +
-        `Cirugías: ${f.cirugias || 'No reporta'}\n` +
-        `Condiciones marcadas: ${condiciones}\n` +
-        `Detalles: ${f.condicionesDetalle || '-'}\n` +
-        `Medicamentos: ${f.medicamentos || 'No reporta'}\n` +
-        `Restricción médica: ${f.restriccionMedica || 'No reporta'}\n` +
-        `Autorización médica para ejercicio: ${f.autorizacionMedica || '-'}\n` +
-        `Tipo de sangre: ${f.tipoSangre || '-'}\n` +
-        `Alergias: ${f.alergias || 'Ninguna reportada'}\n` +
-        `Info adicional: ${f.infoAdicional || '-'}\n\n` +
-        `--- Autorizaciones ---\n` +
-        `Emergencia: ${f.autorizacionEmergencia || '-'}\n` +
-        `Uso de imagen: ${f.usoImagen || '-'}\n` +
-        (f.esMenor ? `\n--- Es menor de edad ---\nTutor: ${f.tutorNombre || '-'} (${f.tutorParentesco || '-'})  Tel: ${f.tutorTelefono || '-'}\nTutor aceptó: ${f.tutorAcepta ? 'Sí' : 'No'}\n` : '') +
-        `\nDeclaraciones aceptadas: ${f.aceptaDeclaraciones ? 'Sí' : 'No'}\n` +
-        `Firma: ${f.firma || '-'}\n` +
-        `Firmada el: ${f.firmadoEl ? new Date(f.firmadoEl).toLocaleDateString('es-MX') : '-'}`
-    );
 }
 
-function adjustCredits(email) {
-    const users = getUsers();
-    const user = users[email];
-    if (!user) return;
-    const input = prompt(`Créditos actuales de ${user.name}: ${user.credits}\nEscribe el nuevo total de créditos:`, user.credits);
+async function viewMedicalFile(email) {
+    const token = getAdminToken();
+    if (!token) return;
+    try {
+        const user = await callRPC('admin_view_medical_file', { p_token: token, p_student_email: email });
+        if (!user || !user.medical_form) {
+            alert('Esta alumna todavía no ha llenado su ficha médica.');
+            return;
+        }
+        const f = user.medical_form;
+        const condiciones = (f.condiciones && f.condiciones.length) ? f.condiciones.join(', ') : 'Ninguna reportada';
+        alert(
+            `CARTA RESPONSIVA Y REGISTRO DE SALUD — ${user.name}\n\n` +
+            `--- Datos personales ---\n` +
+            `Fecha de nacimiento: ${f.fechaNacimiento || '-'}   Edad: ${f.edad || '-'}\n` +
+            `Teléfono: ${f.telefono || '-'}\n` +
+            `Correo: ${f.correo || '-'}\n` +
+            `Domicilio: ${f.domicilio || '-'}\n\n` +
+            `--- Contacto de emergencia ---\n` +
+            `${f.contactoEmergenciaNombre || '-'} (${f.contactoEmergenciaParentesco || '-'})\n` +
+            `Tel: ${f.contactoEmergenciaTelefono || '-'}  Alt: ${f.contactoEmergenciaTelefonoAlt || '-'}\n\n` +
+            `--- Antecedentes de salud ---\n` +
+            `Lesión actual: ${f.lesionActual || 'No reporta'}\n` +
+            `Lesiones anteriores: ${f.lesionesAnteriores || 'No reporta'}\n` +
+            `Cirugías: ${f.cirugias || 'No reporta'}\n` +
+            `Condiciones marcadas: ${condiciones}\n` +
+            `Detalles: ${f.condicionesDetalle || '-'}\n` +
+            `Medicamentos: ${f.medicamentos || 'No reporta'}\n` +
+            `Restricción médica: ${f.restriccionMedica || 'No reporta'}\n` +
+            `Autorización médica para ejercicio: ${f.autorizacionMedica || '-'}\n` +
+            `Tipo de sangre: ${f.tipoSangre || '-'}\n` +
+            `Alergias: ${f.alergias || 'Ninguna reportada'}\n` +
+            `Info adicional: ${f.infoAdicional || '-'}\n\n` +
+            `--- Autorizaciones ---\n` +
+            `Emergencia: ${f.autorizacionEmergencia || '-'}\n` +
+            `Uso de imagen: ${f.usoImagen || '-'}\n` +
+            (f.esMenor ? `\n--- Es menor de edad ---\nTutor: ${f.tutorNombre || '-'} (${f.tutorParentesco || '-'})  Tel: ${f.tutorTelefono || '-'}\nTutor aceptó: ${f.tutorAcepta ? 'Sí' : 'No'}\n` : '') +
+            `\nDeclaraciones aceptadas: ${f.aceptaDeclaraciones ? 'Sí' : 'No'}\n` +
+            `Firma: ${f.firma || '-'}\n` +
+            `Firmada el: ${f.firmadoEl ? new Date(f.firmadoEl).toLocaleDateString('es-MX') : '-'}`
+        );
+    } catch (e) {
+        alert(friendlyError(e));
+    }
+}
+
+async function adjustCredits(email, currentCredits) {
+    const token = getAdminToken();
+    if (!token) return;
+    const input = prompt(`Créditos actuales de ${email}: ${currentCredits}\nEscribe el nuevo total de créditos:`, currentCredits);
     if (input === null) return;
     const value = parseInt(input, 10);
     if (isNaN(value) || value < 0) { alert('Ingresa un número válido.'); return; }
-    user.credits = value;
-    saveUsers(users);
-    renderAdminStudents();
+    try {
+        await callRPC('admin_adjust_credits', { p_token: token, p_student_email: email, p_credits: value });
+        renderAdminStudents();
+        if (currentUser() && currentUser().email === email) { await refreshCurrentStudent(); renderDashboard(); }
+    } catch (e) {
+        alert(friendlyError(e));
+    }
 }
 
 /* --- Horarios (admin) --- */
@@ -1019,9 +889,8 @@ function adjustCredits(email) {
 function renderAdminSchedule() {
     const container = document.getElementById('admin-schedule-list');
     if (!container) return;
-    const schedule = getSchedule();
 
-    container.innerHTML = schedule.map((s, index) => `
+    container.innerHTML = SCHEDULE.map((s, index) => `
         <div class="admin-row">
             <div><strong>${s.day}</strong> ${s.time} — ${s.discipline}</div>
             <div class="admin-row-actions">
@@ -1031,30 +900,43 @@ function renderAdminSchedule() {
     `).join('');
 }
 
-function addScheduleSlot(event) {
+async function saveScheduleToServer() {
+    const token = getAdminToken();
+    if (!token) return;
+    await callRPC('admin_update_content', { p_token: token, p_key: 'schedule', p_value: SCHEDULE });
+}
+
+async function addScheduleSlot(event) {
     event.preventDefault();
     const day = document.getElementById('admin-schedule-day').value;
     const time = document.getElementById('admin-schedule-time').value;
     const discipline = document.getElementById('admin-schedule-discipline').value;
     if (!day || !time || !discipline) return;
 
-    const schedule = getSchedule();
-    schedule.push({ day, time, discipline });
-    saveSchedule(schedule);
-
-    renderAdminSchedule();
-    renderScheduleTable();
-    populateScheduleSelects();
-    event.target.reset();
+    SCHEDULE.push({ day, time, discipline });
+    try {
+        await saveScheduleToServer();
+        renderAdminSchedule();
+        renderScheduleTable();
+        populateScheduleSelects();
+        event.target.reset();
+    } catch (e) {
+        SCHEDULE.pop();
+        alert(friendlyError(e));
+    }
 }
 
-function removeScheduleSlot(index) {
-    const schedule = getSchedule();
-    schedule.splice(index, 1);
-    saveSchedule(schedule);
-    renderAdminSchedule();
-    renderScheduleTable();
-    populateScheduleSelects();
+async function removeScheduleSlot(index) {
+    const removed = SCHEDULE.splice(index, 1);
+    try {
+        await saveScheduleToServer();
+        renderAdminSchedule();
+        renderScheduleTable();
+        populateScheduleSelects();
+    } catch (e) {
+        SCHEDULE.splice(index, 0, removed[0]);
+        alert(friendlyError(e));
+    }
 }
 
 /* --- Paquetes (admin) --- */
@@ -1062,9 +944,8 @@ function removeScheduleSlot(index) {
 function renderAdminPackages() {
     const container = document.getElementById('admin-packages-list');
     if (!container) return;
-    const packages = getPackages();
-    const pole = packages.map((p, i) => ({ p, i })).filter(x => x.p.categoria !== 'ritmos');
-    const ritmos = packages.map((p, i) => ({ p, i })).filter(x => x.p.categoria === 'ritmos');
+    const pole = PACKAGES.map((p, i) => ({ p, i })).filter(x => x.p.categoria !== 'ritmos');
+    const ritmos = PACKAGES.map((p, i) => ({ p, i })).filter(x => x.p.categoria === 'ritmos');
 
     const fila = ({ p, i }) => `
         <div class="admin-row">
@@ -1081,30 +962,46 @@ function renderAdminPackages() {
         ritmos.map(fila).join('');
 }
 
-function editPackage(index) {
-    const packages = getPackages();
-    const pkg = packages[index];
+async function editPackage(index) {
+    const token = getAdminToken();
+    if (!token) return;
+    const pkg = PACKAGES[index];
     const newPrice = prompt(`Nuevo precio para "${pkg.nombre}" (MXN):`, pkg.precio);
     if (newPrice === null) return;
     const newCredits = prompt(`Créditos que otorga "${pkg.nombre}" (usa 999 para ilimitado):`, pkg.creditos);
     if (newCredits === null) return;
 
+    const backup = { ...pkg };
     pkg.precio = parseFloat(newPrice) || pkg.precio;
     pkg.creditos = parseInt(newCredits, 10) || pkg.creditos;
-    savePackages(packages);
-    renderAdminPackages();
+
+    try {
+        await callRPC('admin_update_content', { p_token: token, p_key: 'packages', p_value: PACKAGES });
+        renderAdminPackages();
+        populatePackageOptions();
+        populateGuestPackageOptions();
+    } catch (e) {
+        PACKAGES[index] = backup;
+        alert(friendlyError(e));
+    }
 }
 
-function addDisciplineFromAdmin(event) {
+async function addDisciplineFromAdmin(event) {
     event.preventDefault();
+    const token = getAdminToken();
+    if (!token) return;
     const input = document.getElementById('admin-new-discipline');
     const name = input.value.trim();
     if (!name) return;
-    const disciplines = getDisciplines();
-    if (!disciplines.includes(name)) {
-        disciplines.push(name);
-        saveDisciplines(disciplines);
+    if (DISCIPLINES.includes(name)) { input.value = ''; return; }
+
+    DISCIPLINES.push(name);
+    try {
+        await callRPC('admin_update_content', { p_token: token, p_key: 'disciplines', p_value: DISCIPLINES });
         populateDisciplineSelects();
+        input.value = '';
+    } catch (e) {
+        DISCIPLINES.pop();
+        alert(friendlyError(e));
     }
-    input.value = '';
 }
