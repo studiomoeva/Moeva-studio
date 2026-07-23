@@ -7,10 +7,21 @@
    contraseña en cada acción.
    ========================================================================== */
 
+/* --- DIAGNÓSTICO TEMPORAL: muestra cualquier error en pantalla (quitar después) --- */
+window.addEventListener('error', function (e) {
+    alert('ERROR DETECTADO:\n' + e.message + '\n(línea ' + e.lineno + ')');
+});
+
 const SUPABASE_URL = 'https://pizpweghuneuzxtfpiqb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpenB3ZWdodW5ldXp4dGZwaXFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTY3MDMsImV4cCI6MjEwMDI5MjcwM30.bKtjGt2v6h3wyDiIu4VsLA39cHgONsrVYoJ4UKLFW4g';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let supabase;
+try {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    alert('Conexión a Supabase inicializada correctamente ✓');
+} catch (e) {
+    alert('FALLÓ al crear el cliente de Supabase:\n' + e.message);
+}
 
 const SESSION_KEY = 'moeva_session_email';
 const ADMIN_TOKEN_KEY = 'moeva_admin_token';
