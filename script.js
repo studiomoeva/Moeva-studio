@@ -7,10 +7,74 @@
    contraseña en cada acción.
    ========================================================================== */
 
-const SUPABASE_URL = 'https://pizpweghuneuzxtfpiqb.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpenB3ZWdodW5ldXp4dGZwaXFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTY3MDMsImV4cCI6MjEwMDI5MjcwM30.bKtjGt2v6h3wyDiIu4VsLA39cHgONsrVYoJ4UKLFW4g';
+/* --- Barra de estado visible (sin necesidad de consola ni ventanas emergentes) --- */
+function showStatus(msg, isError) {
+    let bar = document.getElementById('diag-status-bar');
+    if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'diag-status-bar';
+        bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;font-family:sans-serif;font-size:13px;padding:6px 10px;';
+        document.body.prepend(bar);
+    }
+    const line = document.createElement('div');
+    line.textContent = msg;
+    line.style.cssText = isError
+        ? 'background:#c0392b;color:#fff;padding:4px 8px;margin-bottom:2px;border-radius:4px;'
+        : 'background:#2c3e50;color:#fff;padding:4px 8px;margin-bottom:2px;border-radius:4px;';
+    bar.appendChild(line);
+}
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+function loadScriptTag(src) {
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error('No se pudo cargar: ' + src));
+        document.head.appendChild(s);
+    });
+}
+
+let supabase;
+
+async function initSupabaseClient() {
+    const SUPABASE_URL = 'https://pizpweghuneuzxtfpiqb.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpenB3ZWdodW5ldXp4dGZwaXFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTY3MDMsImV4cCI6MjEwMDI5MjcwM30.bKtjGt2v6h3wyDiIu4VsLA39cHgONsrVYoJ4UKLFW4g';
+
+    if (!window.supabase) {
+        showStatus('Cargando librería de Supabase (fuente 1: jsdelivr)...', false);
+        try {
+            await loadScriptTag('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
+        } catch (e) {
+            showStatus('Falló fuente 1. Probando fuente 2 (unpkg)...', true);
+        }
+    }
+
+    if (!window.supabase) {
+        try {
+            await loadScriptTag('https://unpkg.com/@supabase/supabase-js@2');
+        } catch (e) {
+            showStatus('FALLÓ también la fuente 2 (unpkg). Revisa tu conexión a internet.', true);
+        }
+    }
+
+    if (!window.supabase) {
+        showStatus('ERROR: no se pudo cargar la librería de Supabase desde ninguna fuente. El sitio no puede conectarse a la base de datos.', true);
+        return false;
+    }
+
+    try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        showStatus('Conexión a Supabase lista ✓', false);
+        setTimeout(() => {
+            const bar = document.getElementById('diag-status-bar');
+            if (bar) bar.remove();
+        }, 3000);
+        return true;
+    } catch (e) {
+        showStatus('ERROR al crear el cliente de Supabase: ' + e.message, true);
+        return false;
+    }
+}
 
 const SESSION_KEY = 'moeva_session_email';
 const ADMIN_TOKEN_KEY = 'moeva_admin_token';
@@ -70,39 +134,46 @@ function renderAnnouncement() {
 /* --------------------------- Inicialización --------------------------- */
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadAppContent();
-    renderScheduleTable();
-    renderAnnouncement();
-    populateDisciplineSelects();
-    populateScheduleSelects();
-    populatePackageOptions();
-    populateGuestPackageOptions();
+    try {
+        const ok = await initSupabaseClient();
+        if (!ok) return; // Sin conexión a Supabase no tiene caso seguir
 
-    // Sesión de alumna (si ya había iniciado sesión en este navegador)
-    const savedEmail = localStorage.getItem(SESSION_KEY);
-    if (savedEmail) {
-        try {
-            const student = await callRPC('get_student', { p_email: savedEmail });
-            if (student) {
-                CURRENT_STUDENT = student;
-                showDashboard(student);
-            } else {
+        await loadAppContent();
+        renderScheduleTable();
+        renderAnnouncement();
+        populateDisciplineSelects();
+        populateScheduleSelects();
+        populatePackageOptions();
+        populateGuestPackageOptions();
+
+        // Sesión de alumna (si ya había iniciado sesión en este navegador)
+        const savedEmail = localStorage.getItem(SESSION_KEY);
+        if (savedEmail) {
+            try {
+                const student = await callRPC('get_student', { p_email: savedEmail });
+                if (student) {
+                    CURRENT_STUDENT = student;
+                    showDashboard(student);
+                } else {
+                    localStorage.removeItem(SESSION_KEY);
+                }
+            } catch (e) {
                 localStorage.removeItem(SESSION_KEY);
             }
-        } catch (e) {
-            localStorage.removeItem(SESSION_KEY);
         }
-    }
 
-    // Sesión de staff (token guardado en esta pestaña/navegador)
-    const savedToken = sessionStorage.getItem(ADMIN_TOKEN_KEY);
-    if (savedToken) {
-        try {
-            await callRPC('admin_list_students', { p_token: savedToken });
-            showAdminPanel();
-        } catch (e) {
-            sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+        // Sesión de staff (token guardado en esta pestaña/navegador)
+        const savedToken = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+        if (savedToken) {
+            try {
+                await callRPC('admin_list_students', { p_token: savedToken });
+                showAdminPanel();
+            } catch (e) {
+                sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+            }
         }
+    } catch (e) {
+        showStatus('ERROR al iniciar el sitio: ' + (e && e.message ? e.message : e), true);
     }
 });
 
