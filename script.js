@@ -7,21 +7,10 @@
    contraseña en cada acción.
    ========================================================================== */
 
-/* --- DIAGNÓSTICO TEMPORAL: muestra cualquier error en pantalla (quitar después) --- */
-window.addEventListener('error', function (e) {
-    alert('ERROR DETECTADO:\n' + e.message + '\n(línea ' + e.lineno + ')');
-});
-
 const SUPABASE_URL = 'https://pizpweghuneuzxtfpiqb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpenB3ZWdodW5ldXp4dGZwaXFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTY3MDMsImV4cCI6MjEwMDI5MjcwM30.bKtjGt2v6h3wyDiIu4VsLA39cHgONsrVYoJ4UKLFW4g';
 
-let supabase;
-try {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    alert('Conexión a Supabase inicializada correctamente ✓');
-} catch (e) {
-    alert('FALLÓ al crear el cliente de Supabase:\n' + e.message);
-}
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const SESSION_KEY = 'moeva_session_email';
 const ADMIN_TOKEN_KEY = 'moeva_admin_token';
@@ -31,6 +20,7 @@ let CURRENT_STUDENT = null;
 let PACKAGES = [];
 let SCHEDULE = [];
 let DISCIPLINES = [];
+let ANNOUNCEMENT = { enabled: false, text: '' };
 const DAYS_ORDER = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
 /* ------------------------------ Utilidades ------------------------------ */
@@ -62,6 +52,18 @@ async function loadAppContent() {
         if (row.key === 'packages') PACKAGES = row.value;
         if (row.key === 'schedule') SCHEDULE = row.value;
         if (row.key === 'disciplines') DISCIPLINES = row.value;
+        if (row.key === 'announcement') ANNOUNCEMENT = row.value;
+    }
+}
+
+function renderAnnouncement() {
+    const banner = document.getElementById('announcement-banner');
+    if (!banner) return;
+    if (ANNOUNCEMENT && ANNOUNCEMENT.enabled && ANNOUNCEMENT.text && ANNOUNCEMENT.text.trim()) {
+        document.getElementById('announcement-text').textContent = ANNOUNCEMENT.text;
+        banner.classList.remove('hidden');
+    } else {
+        banner.classList.add('hidden');
     }
 }
 
@@ -70,6 +72,7 @@ async function loadAppContent() {
 document.addEventListener('DOMContentLoaded', async () => {
     await loadAppContent();
     renderScheduleTable();
+    renderAnnouncement();
     populateDisciplineSelects();
     populateScheduleSelects();
     populatePackageOptions();
@@ -632,6 +635,28 @@ function showAdminPanel() {
     renderAdminSchedule();
     renderAdminPackages();
     renderAdminPurchases();
+    document.getElementById('admin-announcement-enabled').checked = !!ANNOUNCEMENT.enabled;
+    document.getElementById('admin-announcement-text').value = ANNOUNCEMENT.text || '';
+}
+
+async function saveAnnouncement(event) {
+    event.preventDefault();
+    const token = getAdminToken();
+    if (!token) return;
+
+    const enabled = document.getElementById('admin-announcement-enabled').checked;
+    const text = document.getElementById('admin-announcement-text').value.trim();
+    const backup = { ...ANNOUNCEMENT };
+    ANNOUNCEMENT = { enabled, text };
+
+    try {
+        await callRPC('admin_update_content', { p_token: token, p_key: 'announcement', p_value: ANNOUNCEMENT });
+        renderAnnouncement();
+        alert('Aviso actualizado.');
+    } catch (e) {
+        ANNOUNCEMENT = backup;
+        alert(friendlyError(e));
+    }
 }
 
 function switchAdminTab(tab) {
