@@ -23,6 +23,13 @@
         </nav>
     </header>
 
+    <!-- Aviso público (se llena dinámicamente desde script.js si el staff lo activa) -->
+    <div id="announcement-banner" class="announcement-banner hidden">
+        <div class="container">
+            <p id="announcement-text"></p>
+        </div>
+    </div>
+
     <!-- Hero / Inicio -->
     <section class="hero">
         <div class="hero-content">
@@ -693,6 +700,7 @@
                 <button id="admin-tabbtn-alumnas" class="admin-tab-btn" onclick="switchAdminTab('alumnas')">Alumnas</button>
                 <button id="admin-tabbtn-horarios" class="admin-tab-btn" onclick="switchAdminTab('horarios')">Horarios</button>
                 <button id="admin-tabbtn-paquetes" class="admin-tab-btn" onclick="switchAdminTab('paquetes')">Paquetes</button>
+                <button id="admin-tabbtn-avisos" class="admin-tab-btn" onclick="switchAdminTab('avisos')">Avisos</button>
             </div>
 
             <div id="admin-tab-reservas" class="admin-tab-content">
@@ -738,6 +746,21 @@
             <div id="admin-tab-paquetes" class="admin-tab-content hidden">
                 <h3 class="admin-section-title">Paquetes y precios</h3>
                 <div id="admin-packages-list"></div>
+            </div>
+
+            <div id="admin-tab-avisos" class="admin-tab-content hidden">
+                <h3 class="admin-section-title">Aviso público del sitio</h3>
+                <p class="muted">Este texto aparece en una cajita visible arriba de la página principal, para todas las visitantes. Úsalo para promociones, descuentos, cancelación de alguna clase, workshops, etc.</p>
+                <form onsubmit="saveAnnouncement(event)">
+                    <div class="form-group">
+                        <label class="checkbox-item"><input type="checkbox" id="admin-announcement-enabled"> Mostrar este aviso en el sitio</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Texto del aviso</label>
+                        <textarea id="admin-announcement-text" rows="3" placeholder="Ej. Este viernes no hay clase de Pole Fitness de 7pm por mantenimiento del estudio."></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Guardar aviso</button>
+                </form>
             </div>
         </div>
     </section>
