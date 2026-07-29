@@ -52,6 +52,19 @@ ul {
     z-index: 100;
 }
 
+.announcement-banner {
+    background: var(--color-mauve);
+    color: var(--color-white);
+    text-align: center;
+    padding: 0.85rem 1rem;
+}
+
+.announcement-banner p {
+    margin: 0;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
 .logo {
     font-family: var(--font-heading);
     font-size: 1.8rem;
