@@ -80,6 +80,18 @@ function money(n) {
     return '$' + Number(n).toLocaleString('es-MX') + ' MXN';
 }
 
+function formatDate(d) {
+    if (!d) return '-';
+    const date = new Date(d + 'T00:00:00');
+    return date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function addOneMonth(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setMonth(d.getMonth() + 1);
+    return d.toISOString().slice(0, 10);
+}
+
 function getMembershipStatus(user) {
     return user.membership_status || 'pendiente';
 }
@@ -687,6 +699,7 @@ function showAdminPanel() {
     document.getElementById('admin-panel').scrollIntoView({ behavior: 'smooth' });
     renderAdminReservations();
     renderAdminStudents();
+    renderUpcomingRenewals();
     renderAdminSchedule();
     renderAdminPackages();
     renderAdminPurchases();
@@ -839,11 +852,13 @@ async function renderAdminStudents() {
         container.innerHTML = students.map(s => {
             const membershipStatus = getMembershipStatus(s);
             const membershipLabels = { pagada: 'Afiliación: Pagada', exenta: 'Afiliación: Exenta/promoción', pendiente: 'Afiliación: Pendiente' };
+            const nextDue = s.membership_paid_at ? addOneMonth(s.membership_paid_at) : null;
             return `
             <div class="admin-row admin-row-student">
                 <div>
                     <strong>${s.name}</strong><br>
                     <span class="muted">${s.email} · ${s.phone || 'sin teléfono'} · ${s.birthday ? 'cumpleaños: ' + s.birthday : 'sin fecha de nacimiento'}</span><br>
+                    <span class="muted">Inscripción: ${formatDate(s.enrollment_date)}${s.membership_paid_at ? ' · Último pago: ' + formatDate(s.membership_paid_at) : ''}${nextDue && membershipStatus === 'pagada' ? ' · Próximo cobro: ' + formatDate(nextDue) : ''}</span><br>
                     <span class="status-badge ${s.medical_signed ? 'status-ok' : 'status-pending'}">Ficha médica: ${s.medical_signed ? 'Completa' : 'Pendiente'}</span>
                     <span class="status-badge ${s.reglamento_signed ? 'status-ok' : 'status-pending'}">Reglamento: ${s.reglamento_signed ? 'Firmado' : 'Pendiente'}</span>
                     <span class="status-badge ${membershipStatus === 'pendiente' ? 'status-pending' : 'status-ok'}">${membershipLabels[membershipStatus]}${s.membership_note ? ' — ' + s.membership_note : ''}</span>
@@ -853,12 +868,74 @@ async function renderAdminStudents() {
                     <button class="btn-secondary sm" onclick="viewMedicalFile('${s.email}')">Ver ficha médica</button>
                     <button class="btn-secondary sm" onclick="adjustCredits('${s.email}', ${s.credits})">Ajustar créditos</button>
                     <button class="btn-secondary sm" onclick="setMembershipStatus('${s.email}', '${membershipStatus}', '${(s.membership_note || '').replace(/'/g, "\\'")}')">Afiliación</button>
+                    <button class="btn-secondary sm" onclick="editEnrollmentDate('${s.email}', '${s.enrollment_date}')">Editar fecha de inscripción</button>
                     <button class="btn-secondary sm btn-danger" onclick="deleteStudent('${s.email}', '${s.name.replace(/'/g, "\\'")}')">Borrar alumna</button>
                 </div>
             </div>`;
         }).join('');
     } catch (e) {
         container.innerHTML = `<p class="empty-state">${friendlyError(e)}</p>`;
+    }
+}
+
+async function renderUpcomingRenewals() {
+    const container = document.getElementById('admin-renewals-list');
+    if (!container) return;
+    const token = getAdminToken();
+    if (!token) return;
+
+    container.innerHTML = '<p class="empty-state">Cargando...</p>';
+    try {
+        const students = await callRPC('admin_upcoming_renewals', { p_token: token, p_days_ahead: 2 });
+
+        if (!students || students.length === 0) {
+            container.innerHTML = '<p class="empty-state">Ninguna alumna vence en los próximos 2 días.</p>';
+            return;
+        }
+
+        container.innerHTML = students.map(s => {
+            const nextDue = addOneMonth(s.membership_paid_at);
+            const phoneDigits = (s.phone || '').replace(/\D/g, '');
+            const mensaje = encodeURIComponent(`Hola ${s.name.split(' ')[0]}, te escribimos de MOÉVA para recordarte que tu afiliación mensual vence el ${formatDate(nextDue)}. ¡Te esperamos! 💜`);
+            return `
+            <div class="admin-row">
+                <div>
+                    <strong>${s.name}</strong><br>
+                    <span class="muted">${s.phone || 'sin teléfono'} · Vence: ${formatDate(nextDue)}</span>
+                </div>
+                <div class="admin-row-actions">
+                    ${phoneDigits ? `<a class="btn-primary sm" target="_blank" href="https://wa.me/52${phoneDigits}?text=${mensaje}">Recordar por WhatsApp</a>` : '<span class="muted">Sin teléfono</span>'}
+                </div>
+            </div>`;
+        }).join('');
+    } catch (e) {
+        container.innerHTML = `<p class="empty-state">${friendlyError(e)}</p>`;
+    }
+}
+
+async function editEnrollmentDate(email, currentDate) {
+    const token = getAdminToken();
+    if (!token) return;
+
+    const input = prompt(`Fecha de inscripción de ${email}\nEscríbela en formato AAAA-MM-DD (ejemplo: 2024-03-15):`, currentDate || '');
+    if (input === null) return;
+
+    const value = input.trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        alert('Formato inválido. Usa AAAA-MM-DD, por ejemplo 2024-03-15.');
+        return;
+    }
+    if (isNaN(new Date(value + 'T00:00:00').getTime())) {
+        alert('Esa fecha no es válida.');
+        return;
+    }
+
+    try {
+        await callRPC('admin_set_enrollment_date', { p_token: token, p_student_email: email, p_date: value });
+        renderAdminStudents();
+        alert('Fecha de inscripción actualizada.');
+    } catch (e) {
+        alert(friendlyError(e));
     }
 }
 
