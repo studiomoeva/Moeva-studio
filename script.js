@@ -5,7 +5,15 @@
    Las contraseñas se guardan con hash (no en texto plano). El acceso de
    staff usa un token de sesión temporal (12 horas) en vez de reenviar la
    contraseña en cada acción.
+
+   IMPORTANTE: este archivo NO depende de ninguna librería externa cargada
+   desde internet (nada de CDNs). Habla directo con la API de Supabase
+   usando fetch(), que ya viene integrado en cualquier navegador. Esto evita
+   problemas cuando una red bloquea servicios externos como jsdelivr/unpkg.
    ========================================================================== */
+
+const SUPABASE_URL = 'https://pizpweghuneuzxtfpiqb.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpenB3ZWdodW5ldXp4dGZwaXFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTY3MDMsImV4cCI6MjEwMDI5MjcwM30.bKtjGt2v6h3wyDiIu4VsLA39cHgONsrVYoJ4UKLFW4g';
 
 /* --- Barra de estado visible (sin necesidad de consola ni ventanas emergentes) --- */
 function showStatus(msg, isError) {
@@ -24,56 +32,35 @@ function showStatus(msg, isError) {
     bar.appendChild(line);
 }
 
-function loadScriptTag(src) {
-    return new Promise((resolve, reject) => {
-        const s = document.createElement('script');
-        s.src = src;
-        s.onload = () => resolve();
-        s.onerror = () => reject(new Error('No se pudo cargar: ' + src));
-        document.head.appendChild(s);
+/* Llama a una función (RPC) de la base de datos usando fetch() nativo */
+async function callRPC(name, params) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify(params || {})
     });
+    let body = null;
+    try { body = await res.json(); } catch (e) { /* respuesta vacía, ok */ }
+    if (!res.ok) {
+        throw new Error((body && (body.message || body.error_description)) || ('Error ' + res.status));
+    }
+    return body;
 }
 
-let supabase;
-
-async function initSupabaseClient() {
-    const SUPABASE_URL = 'https://pizpweghuneuzxtfpiqb.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpenB3ZWdodW5ldXp4dGZwaXFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3MTY3MDMsImV4cCI6MjEwMDI5MjcwM30.bKtjGt2v6h3wyDiIu4VsLA39cHgONsrVYoJ4UKLFW4g';
-
-    if (!window.supabase) {
-        showStatus('Cargando librería de Supabase (fuente 1: jsdelivr)...', false);
-        try {
-            await loadScriptTag('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
-        } catch (e) {
-            showStatus('Falló fuente 1. Probando fuente 2 (unpkg)...', true);
+/* Lee filas de una tabla directamente (solo se usa para app_content, que es público) */
+async function selectTable(table, query) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
+        headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
         }
-    }
-
-    if (!window.supabase) {
-        try {
-            await loadScriptTag('https://unpkg.com/@supabase/supabase-js@2');
-        } catch (e) {
-            showStatus('FALLÓ también la fuente 2 (unpkg). Revisa tu conexión a internet.', true);
-        }
-    }
-
-    if (!window.supabase) {
-        showStatus('ERROR: no se pudo cargar la librería de Supabase desde ninguna fuente. El sitio no puede conectarse a la base de datos.', true);
-        return false;
-    }
-
-    try {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        showStatus('Conexión a Supabase lista ✓', false);
-        setTimeout(() => {
-            const bar = document.getElementById('diag-status-bar');
-            if (bar) bar.remove();
-        }, 3000);
-        return true;
-    } catch (e) {
-        showStatus('ERROR al crear el cliente de Supabase: ' + e.message, true);
-        return false;
-    }
+    });
+    if (!res.ok) throw new Error('Error ' + res.status);
+    return res.json();
 }
 
 const SESSION_KEY = 'moeva_session_email';
@@ -97,12 +84,6 @@ function getMembershipStatus(user) {
     return user.membership_status || 'pendiente';
 }
 
-async function callRPC(name, params) {
-    const { data, error } = await supabase.rpc(name, params);
-    if (error) throw error;
-    return data;
-}
-
 function friendlyError(e) {
     return (e && e.message) ? e.message : 'Ocurrió un error. Intenta de nuevo.';
 }
@@ -110,8 +91,7 @@ function friendlyError(e) {
 /* --------------------------- Contenido público --------------------------- */
 
 async function loadAppContent() {
-    const { data, error } = await supabase.from('app_content').select('key,value');
-    if (error) { console.error(error); return; }
+    const data = await selectTable('app_content', 'select=key,value');
     for (const row of data) {
         if (row.key === 'packages') PACKAGES = row.value;
         if (row.key === 'schedule') SCHEDULE = row.value;
@@ -135,10 +115,14 @@ function renderAnnouncement() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const ok = await initSupabaseClient();
-        if (!ok) return; // Sin conexión a Supabase no tiene caso seguir
-
+        showStatus('Conectando con la base de datos...', false);
         await loadAppContent();
+        showStatus('Conexión lista ✓', false);
+        setTimeout(() => {
+            const bar = document.getElementById('diag-status-bar');
+            if (bar) bar.remove();
+        }, 2000);
+
         renderScheduleTable();
         renderAnnouncement();
         populateDisciplineSelects();
@@ -173,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     } catch (e) {
-        showStatus('ERROR al iniciar el sitio: ' + (e && e.message ? e.message : e), true);
+        showStatus('ERROR al conectar con la base de datos: ' + (e && e.message ? e.message : e), true);
     }
 });
 
